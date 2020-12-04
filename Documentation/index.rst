@@ -92,6 +92,102 @@ platform firmwares.
    firmware-guide/index
    devicetree/index
 
+Application-developer documentation
+-----------------------------------
+
+The user-space API manual gathers together documents describing aspects of
+the kernel interface as seen by application developers.
+
+.. toctree::
+   :maxdepth: 2
+
+   userspace-api/index
+
+
+Introduction to kernel development
+----------------------------------
+
+These manuals contain overall information about how to develop the kernel.
+The kernel community is quite large, with thousands of developers
+contributing over the course of a year.  As with any large community,
+knowing how things are done will make the process of getting your changes
+merged much easier.
+
+.. toctree::
+   :maxdepth: 2
+
+   process/index
+   dev-tools/index
+   doc-guide/index
+   kernel-hacking/index
+   trace/index
+   maintainer/index
+   fault-injection/index
+   livepatch/index
+
+
+Kernel API documentation
+------------------------
+
+These books get into the details of how specific kernel subsystems work
+from the point of view of a kernel developer.  Much of the information here
+is taken directly from the kernel source, with supplemental material added
+as needed (or at least as we managed to add it — probably *not* all that is
+needed).
+
+.. toctree::
+   :maxdepth: 2
+
+   driver-api/index
+   core-api/index
+   locking/index
+   accounting/index
+   block/index
+   cdrom/index
+   cpu-freq/index
+   fb/index
+   fpga/index
+   hid/index
+   i2c/index
+   iio/index
+   isdn/index
+   infiniband/index
+   jtag/index
+   leds/index
+   netlabel/index
+   networking/index
+   pcmcia/index
+   power/index
+   target/index
+   timers/index
+   spi/index
+   w1/index
+   watchdog/index
+   virt/index
+   input/index
+   hwmon/index
+   gpu/index
+   security/index
+   sound/index
+   crypto/index
+   filesystems/index
+   mm/index
+   bpf/index
+   usb/index
+   PCI/index
+   scsi/index
+   misc-devices/index
+   scheduler/index
+   mhi/index
+   peci/index
+
+Architecture-agnostic documentation
+-----------------------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   asm-annotations
 
 Architecture-specific documentation
 ===================================
