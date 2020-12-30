@@ -131,8 +131,6 @@ static void ncsi_channel_monitor(struct timer_list *t)
 	case NCSI_CHANNEL_MONITOR_WAIT ... NCSI_CHANNEL_MONITOR_WAIT_MAX:
 		break;
 	default:
-		netdev_err(ndp->ndev.dev, "NCSI Channel %d timed out!\n",
-			   nc->id);
 		ncsi_report_link(ndp, true);
 		ndp->flags |= NCSI_DEV_RESHUFFLE;
 
@@ -1239,9 +1237,6 @@ static int ncsi_choose_active_channel(struct ncsi_dev_priv *ndp)
 	}
 
 	if (list_empty(&ndp->channel_queue) && found) {
-		netdev_info(ndp->ndev.dev,
-			    "NCSI: No channel with link found, configuring channel %u\n",
-			    found->id);
 		spin_lock_irqsave(&ndp->lock, flags);
 		list_add_tail_rcu(&found->link, &ndp->channel_queue);
 		spin_unlock_irqrestore(&ndp->lock, flags);

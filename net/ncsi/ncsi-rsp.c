@@ -1170,10 +1170,6 @@ int ncsi_rcv_rsp(struct sk_buff *skb, struct net_device *dev,
 		payload = ntohs(hdr->length);
 	ret = ncsi_validate_rsp_pkt(nr, payload);
 	if (ret) {
-		netdev_warn(ndp->ndev.dev,
-			    "NCSI: 'bad' packet ignored for type 0x%x\n",
-			    hdr->type);
-
 		if (nr->flags == NCSI_REQ_FLAG_NETLINK_DRIVEN) {
 			if (ret == -EPERM)
 				goto out_netlink;
