@@ -520,7 +520,7 @@ static void dev_watchdog(struct timer_list *t)
 				}
 			}
 
-			if (unlikely(timedout_ms)) {
+			if (unlikely(timedout_ms) && 0) {
 				trace_net_dev_xmit_timeout(dev, i);
 				netdev_crit(dev, "NETDEV WATCHDOG: CPU: %d: transmit queue %u timed out %u ms\n",
 					    raw_smp_processor_id(),
