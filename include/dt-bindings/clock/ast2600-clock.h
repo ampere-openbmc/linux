@@ -60,6 +60,21 @@
 #define ASPEED_CLK_GATE_I3C6CLK		43
 #define ASPEED_CLK_GATE_I3C7CLK		44
 
+#define ASPEED_CLK_GATE_I3CDMACLK      37
+
+#define ASPEED_RESET_I3C_DMA           39
+#define ASPEED_RESET_I3C7              47
+#define ASPEED_RESET_I3C6              46
+#define ASPEED_RESET_I3C5              45
+#define ASPEED_RESET_I3C4              44
+#define ASPEED_RESET_I3C3              43
+#define ASPEED_RESET_I3C2              42
+#define ASPEED_RESET_I3C1              41
+#define ASPEED_RESET_I3C0              40
+#define ASPEED_RESET_I3C               39
+
+#define ASPEED_CLK_I3C                 74
+
 #define ASPEED_CLK_GATE_FSICLK		45
 
 #define ASPEED_CLK_HPLL			46
