@@ -549,10 +549,13 @@ static int aspeed_get_fan_tach_ch_rpm(struct aspeed_pwm_tacho_data *priv,
 		usec);
 
 	mutex_unlock(&priv->tach_lock);
-
-	/* return -ETIMEDOUT if we didn't get an answer. */
-	if (ret)
-		return ret;
+	if (ret) {
+		/* return 0 if we didn't get an answer because of timeout*/
+		if (ret == -ETIMEDOUT)
+			return 0;
+		else
+			return ret;
+	}
 
 	raw_data = val & RESULT_VALUE_MASK;
 	tach_div = priv->type_fan_tach_clock_division[type];
