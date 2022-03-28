@@ -79,7 +79,6 @@ config MFD_AS3711
 
 config MFD_SMPRO
 	tristate "Ampere Computing MFD SMpro core driver"
-	select MFD_SIMPLE_MFD_I2C
 	depends on I2C
 	select MFD_CORE
 	select REGMAP_I2C
