@@ -285,8 +285,21 @@ static u32 aspeed_i2c_slave_irq(struct aspeed_i2c_bus *bus, u32 irq_status)
 	 * If the slave has been stopped and not started then slave interrupt
 	 * handling is complete.
 	 */
-	if (bus->slave_state == ASPEED_I2C_SLAVE_INACTIVE)
-		return irq_handled;
+	if (bus->slave_state == ASPEED_I2C_SLAVE_INACTIVE) {
+		/*
+		* Observed that sometimes Slave Match is missing and make Rx
+		* done unhandled. Handle case where RX Done come without
+		* SLAVE MATCH in slave only setup *
+		*/
+		if ((unlikely(irq_status == ASPEED_I2CD_INTR_RX_DONE)) &&
+		    (bus->master_state == ASPEED_I2C_MASTER_INACTIVE ||
+		    bus->master_state == ASPEED_I2C_MASTER_PENDING))
+			bus->slave_state = ASPEED_I2C_SLAVE_START;
+		else {
+			irq_handled |= ASPEED_I2CD_INTR_RX_DONE;
+			goto out;
+		}
+	}
 
 	command = readl(bus->base + ASPEED_I2C_CMD_REG);
 	dev_dbg(bus->dev, "slave irq status 0x%08x, cmd 0x%08x\n",
@@ -352,7 +365,7 @@ static u32 aspeed_i2c_slave_irq(struct aspeed_i2c_bus *bus, u32 irq_status)
 		bus->slave_state = ASPEED_I2C_SLAVE_INACTIVE;
 		break;
 	}
-
+out:
 	return irq_handled;
 }
 #endif /* CONFIG_I2C_SLAVE */
