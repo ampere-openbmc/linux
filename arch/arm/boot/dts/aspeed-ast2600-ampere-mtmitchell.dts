@@ -1249,7 +1249,7 @@
 	/*K0-K7*/	"","","","","","","","",
 	/*L0-L7*/	"","","","","","","","",
 	/*M0-M7*/	"bmc-uart-cts1","s0-ddr-save","soc-spi-nor-access","presence-cpu0","s0-rtc-lock","","","",
-	/*N0-N7*/	"hpm-fw-recovery","hpm-stby-rst-n","jtag-sel-s0","led-sw-hb","jtag-dbgr-prsnt-n","","","",
+	/*N0-N7*/	"hpm-fw-recovery","hpm-stby-rst-n","jtag-sel-s0","led-sw-hb","jtag-dbgr-prsnt-n","s1-heartbeat","","",
 	/*O0-O7*/	"","","","","","","","",
 	/*P0-P7*/	"ps0-ac-loss-n","ps1-ac-loss-n","","","led-fault","cpld-user-mode","jtag-srst-n","led-bmc-hb",
 	/*Q0-Q7*/	"","","","","","","","",
