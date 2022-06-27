@@ -57,44 +57,47 @@
 		/*
 		 *  Front Backplane
 		 *  i2c switch 9-0072 channel 0-0071, 8 child channels assigned
-		 *  with bus number from 50 to 57
+		 *  with bus number from 56 to 63. NVME label 8 to 15.
 		 */
-		i2c50 = &bus72_mux0_chn0;
-		i2c51 = &bus72_mux0_chn1;
-		i2c52 = &bus72_mux0_chn2;
-		i2c53 = &bus72_mux0_chn3;
-		i2c54 = &bus72_mux0_chn4;
-		i2c55 = &bus72_mux0_chn5;
-		i2c56 = &bus72_mux0_chn6;
-		i2c57 = &bus72_mux0_chn7;
+		i2c101 = &bus9_mux72_chn0;
+		i2c56 = &bus72_mux0_chn0;
+		i2c57 = &bus72_mux0_chn1;
+		i2c58 = &bus72_mux0_chn2;
+		i2c59 = &bus72_mux0_chn3;
+		i2c60 = &bus72_mux0_chn4;
+		i2c61 = &bus72_mux0_chn5;
+		i2c62 = &bus72_mux0_chn6;
+		i2c63 = &bus72_mux0_chn7;
 
 		/*
 		 *  Front Backplane
 		 *  i2c switch 9-0072 channel 2-0071, 8 child channels assigned
-		 *  with bus number from 60 to 67
+		 *  with bus number from 64 to 71. NVME label 16 to 23.
 		 */
-		i2c60 = &bus72_mux2_chn0;
-		i2c61 = &bus72_mux2_chn1;
-		i2c62 = &bus72_mux2_chn2;
-		i2c63 = &bus72_mux2_chn3;
-		i2c64 = &bus72_mux2_chn4;
-		i2c65 = &bus72_mux2_chn5;
-		i2c66 = &bus72_mux2_chn6;
-		i2c67 = &bus72_mux2_chn7;
+		i2c102 = &bus9_mux72_chn2;
+		i2c64 = &bus72_mux2_chn0;
+		i2c65 = &bus72_mux2_chn1;
+		i2c66 = &bus72_mux2_chn2;
+		i2c67 = &bus72_mux2_chn3;
+		i2c68 = &bus72_mux2_chn4;
+		i2c69 = &bus72_mux2_chn5;
+		i2c70 = &bus72_mux2_chn6;
+		i2c71 = &bus72_mux2_chn7;
 
 		/*
 		 *  Front Backplane
 		 *  i2c switch 9-0072 channel 4-0071, 8 child channels assigned
-		 *  with bus number from 70 to 77
+		 *  with bus number from 48 to 55. NVME 0 to 7
 		 */
-		i2c70 = &bus72_mux4_chn0;
-		i2c71 = &bus72_mux4_chn1;
-		i2c72 = &bus72_mux4_chn2;
-		i2c73 = &bus72_mux4_chn3;
-		i2c74 = &bus72_mux4_chn4;
-		i2c75 = &bus72_mux4_chn5;
-		i2c76 = &bus72_mux4_chn6;
-		i2c77 = &bus72_mux4_chn7;
+		i2c100 = &bus9_mux72_chn4;
+		i2c48 = &bus72_mux4_chn0;
+		i2c49 = &bus72_mux4_chn1;
+		i2c50 = &bus72_mux4_chn2;
+		i2c51 = &bus72_mux4_chn3;
+		i2c52 = &bus72_mux4_chn4;
+		i2c53 = &bus72_mux4_chn5;
+		i2c54 = &bus72_mux4_chn6;
+		i2c55 = &bus72_mux4_chn7;
 
 	    /*
 		 *  M.2 Riser
@@ -716,10 +719,16 @@
 		reg = <0x72>;
 		i2c-mux-idle-disconnect;
 
-		i2c@0 {
+		bus9_mux72_chn0: i2c@0 {
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <0x0>;
+
+			eeprom@50 {
+				compatible = "microchip,24c64", "atmel,24c64";
+				reg = <0x50>;
+				pagesize = <32>;
+			};
 
 			i2c-switch@71 {
 				compatible = "nxp,pca9548";
@@ -816,10 +825,16 @@
 			};
 		};
 
-		i2c@2 {
+		bus9_mux72_chn2: i2c@2 {
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <0x2>;
+
+			eeprom@50 {
+				compatible = "microchip,24c64", "atmel,24c64";
+				reg = <0x50>;
+				pagesize = <32>;
+			};
 
 			i2c-switch@71 {
 				compatible = "nxp,pca9548";
@@ -916,10 +931,16 @@
 			};
 		};
 
-		i2c@4 {
+		bus9_mux72_chn4: i2c@4 {
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <0x4>;
+
+			eeprom@50 {
+				compatible = "microchip,24c64", "atmel,24c64";
+				reg = <0x50>;
+				pagesize = <32>;
+			};
 
 			i2c-switch@71 {
 				compatible = "nxp,pca9548";
