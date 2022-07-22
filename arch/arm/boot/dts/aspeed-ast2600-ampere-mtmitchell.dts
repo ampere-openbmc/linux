@@ -161,12 +161,6 @@
                     gpios = <&gpio0 ASPEED_GPIO(X, 3) GPIO_ACTIVE_LOW>;
                     linux,code = <ASPEED_GPIO(X, 3)>;
             };
-
-	    id_button {
-		    label = "ID_BUTTON";
-		    gpios = <&gpio0 ASPEED_GPIO(S, 2) GPIO_ACTIVE_LOW>;
-		    linux,code = <ASPEED_GPIO(S, 2)>;
-	    };
     };
 
     ltc2497_reg: ltc2497_regulator {
