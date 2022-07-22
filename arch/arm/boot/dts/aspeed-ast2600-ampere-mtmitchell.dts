@@ -150,22 +150,10 @@
     gpio-keys {
             compatible = "gpio-keys";
 
-            S0_overtemp {
-                    label = "S0_OVERTEMP";
-                    gpios = <&gpio0 ASPEED_GPIO(V, 7) GPIO_ACTIVE_LOW>;
-                    linux,code = <ASPEED_GPIO(V, 7)>;
-            };
-
             S0_hightemp {
                     label = "S0_HIGHTEMP";
                     gpios = <&gpio0 ASPEED_GPIO(V, 0) GPIO_ACTIVE_LOW>;
                     linux,code = <ASPEED_GPIO(V, 0)>;
-            };
-
-            S1_overtemp {
-                    label = "S1_OVERTEMP";
-                    gpios = <&gpio0 ASPEED_GPIO(X, 6) GPIO_ACTIVE_LOW>;
-                    linux,code = <ASPEED_GPIO(X, 6)>;
             };
 
             S1_hightemp {
@@ -173,12 +161,6 @@
                     gpios = <&gpio0 ASPEED_GPIO(X, 3) GPIO_ACTIVE_LOW>;
                     linux,code = <ASPEED_GPIO(X, 3)>;
             };
-
-	    id_button {
-		    label = "ID_BUTTON";
-		    gpios = <&gpio0 ASPEED_GPIO(S, 2) GPIO_ACTIVE_LOW>;
-		    linux,code = <ASPEED_GPIO(S, 2)>;
-	    };
     };
 
     ltc2497_reg: ltc2497_regulator {
