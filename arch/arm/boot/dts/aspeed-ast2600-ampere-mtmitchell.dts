@@ -1223,7 +1223,7 @@
 	/*C0-C7*/	"s0-vrd-fault-n","s1-vrd-fault-n","bmc-debug-mode","","irq-n","","vrd-sel","spd-sel",
 	/*D0-D7*/	"presence-ps0","presence-ps1","hsc-12vmain-alt2-n","ext-high-temp-n","","bmc-ncsi-txen","","",
 	/*E0-E7*/	"eth-phy-rst-n","eth-phy-int-n","clk50m-bmc-ncsi","","","","","",
-	/*F0-F7*/	"s0-pcp-oc-warn-n","s1-pcp-oc-warn-n","power-chassis-control","cpu-bios-recover","cpld-done","hs-scout-proc-hot","s0-vr-hot-n","s1-vr-hot-n",
+	/*F0-F7*/	"s0-pcp-oc-warn-n","s1-pcp-oc-warn-n","power-chassis-control","cpu-bios-recover","s0-heartbeat","hs-scout-proc-hot","s0-vr-hot-n","s1-vr-hot-n",
 	/*G0-G7*/	"","","hsc-12vmain-alt1-n","bmc-salt12-s0-ssif-n","","","","",
 	/*H0-H7*/	"","fpga-program-b","wd-disable-n","power-chassis-good","","","","",
 	/*I0-I7*/	"","","","","","adc-sw","power-button","rtc-battery-voltage-read-enable",
