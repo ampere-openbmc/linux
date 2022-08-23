@@ -783,7 +783,7 @@
 	gpio-line-names =
 	/*A0-A7*/	"","","","S0_BMC_SPECIAL_BOOT","","","","",
 	/*B0-B7*/	"BMC_SELECT_EEPROM","","","",
-			"POWER_BUTTON","","","",
+			"POWER_BUTTON","S0_PRESENT_CPLD_L","","S1_PRESENT_CPLD_L",
 	/*C0-C7*/	"","","","","","","","",
 	/*D0-D7*/	"","","","","","","","",
 	/*E0-E7*/	"","","","","","","","",
