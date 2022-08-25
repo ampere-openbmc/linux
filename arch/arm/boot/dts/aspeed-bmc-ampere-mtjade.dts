@@ -148,12 +148,6 @@
 			linux,code = <ASPEED_GPIO(AB, 0)>;
 		};
 
-		id_button {
-			label = "ID_BUTTON";
-			gpios = <&gpio ASPEED_GPIO(Q, 5) GPIO_ACTIVE_LOW>;
-			linux,code = <ASPEED_GPIO(Q, 5)>;
-		};
-
 		psu1_vin_good {
 			label = "PSU1_VIN_GOOD";
 			gpios = <&gpio ASPEED_GPIO(H, 4) GPIO_ACTIVE_LOW>;
