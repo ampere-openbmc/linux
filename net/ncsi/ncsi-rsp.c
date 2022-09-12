@@ -633,8 +633,18 @@ static int ncsi_rsp_handler_oem_gma(struct ncsi_request *nr, int mfr_id)
 	else if (mfr_id == NCSI_OEM_MFR_INTEL_ID)
 		mac_addr_off = INTEL_MAC_ADDR_OFFSET;
 
-	memcpy(saddr.sa_data, &rsp->data[mac_addr_off], ETH_ALEN);
-	if (mfr_id == NCSI_OEM_MFR_BCM_ID || mfr_id == NCSI_OEM_MFR_INTEL_ID)
+	if (mfr_id == NCSI_OEM_MFR_BCM_ID) {
+		saddr.sa_data[0] = rsp->data[mac_addr_off+5];
+		saddr.sa_data[1] = rsp->data[mac_addr_off+4];
+		saddr.sa_data[2] = rsp->data[mac_addr_off+3];
+		saddr.sa_data[3] = rsp->data[mac_addr_off+2];
+		saddr.sa_data[4] = rsp->data[mac_addr_off+1];
+		saddr.sa_data[5] = rsp->data[mac_addr_off];
+	} else {
+		memcpy(saddr.sa_data, &rsp->data[mac_addr_off], ETH_ALEN);
+	}
+
+	if (mfr_id == NCSI_OEM_MFR_INTEL_ID)
 		eth_addr_inc((u8 *)saddr.sa_data);
 	if (!is_valid_ether_addr((const u8 *)saddr.sa_data))
 		return -ENXIO;
