@@ -731,6 +731,8 @@ static int ncsi_oem_gma_handler_bcm(struct ncsi_cmd_arg *nca)
 	memset(data, 0, NCSI_OEM_BCM_CMD_GMA_LEN);
 	*(unsigned int *)data = ntohl((__force __be32)NCSI_OEM_MFR_BCM_ID);
 	data[5] = NCSI_OEM_BCM_CMD_GMA;
+	data[6] = NCSI_OEM_BMC_PAYLOAD_LENGTH_HI;
+	data[7] = NCSI_OEM_BMC_PAYLOAD_LENGTH_LO;
 
 	nca->data = data;
 
