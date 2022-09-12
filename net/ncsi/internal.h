@@ -83,7 +83,7 @@ enum {
 #define NCSI_OEM_INTEL_CMD_GMA          0x06   /* CMD ID for Get MAC */
 #define NCSI_OEM_INTEL_CMD_KEEP_PHY     0x20   /* CMD ID for Keep PHY up */
 /* Broadcom specific OEM Command */
-#define NCSI_OEM_BCM_CMD_GMA            0x01   /* CMD ID for Get MAC */
+#define NCSI_OEM_BCM_CMD_GMA            0x16   /* CMD ID for Get MAC */
 /* Mellanox specific OEM Command */
 #define NCSI_OEM_MLX_CMD_GMA            0x00   /* CMD ID for Get MAC */
 #define NCSI_OEM_MLX_CMD_GMA_PARAM      0x1b   /* Parameter for GMA  */
@@ -92,14 +92,17 @@ enum {
 /* OEM Command payload lengths*/
 #define NCSI_OEM_INTEL_CMD_GMA_LEN      5
 #define NCSI_OEM_INTEL_CMD_KEEP_PHY_LEN 7
-#define NCSI_OEM_BCM_CMD_GMA_LEN        12
 #define NCSI_OEM_MLX_CMD_GMA_LEN        8
 #define NCSI_OEM_MLX_CMD_SMAF_LEN        60
+/* Broadcom specific OEM Payload Length */
+#define NCSI_OEM_BCM_CMD_GMA_LEN        16
+#define NCSI_OEM_BMC_PAYLOAD_LENGTH_LO  0x04
+#define NCSI_OEM_BMC_PAYLOAD_LENGTH_HI  0x00
 /* Offset in OEM request */
 #define MLX_SMAF_MAC_ADDR_OFFSET         8     /* Offset for MAC in SMAF    */
 #define MLX_SMAF_MED_SUPPORT_OFFSET      14    /* Offset for medium in SMAF */
 /* Mac address offset in OEM response */
-#define BCM_MAC_ADDR_OFFSET             28
+#define BCM_MAC_ADDR_OFFSET             8
 #define MLX_MAC_ADDR_OFFSET             8
 #define INTEL_MAC_ADDR_OFFSET           1
 
