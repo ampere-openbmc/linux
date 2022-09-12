@@ -668,9 +668,14 @@ static int ncsi_rsp_handler_oem_bcm_gma(struct ncsi_request *nr)
 
 	saddr.sa_family = ndev->type;
 	ndev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
-	memcpy(saddr.sa_data, &rsp->data[BCM_MAC_ADDR_OFFSET], ETH_ALEN);
-	/* Increase mac address by 1 for BMC's address */
-	eth_addr_inc((u8 *)saddr.sa_data);
+
+	saddr.sa_data[0] = rsp->data[BCM_MAC_ADDR_OFFSET+5];
+	saddr.sa_data[1] = rsp->data[BCM_MAC_ADDR_OFFSET+4];
+	saddr.sa_data[2] = rsp->data[BCM_MAC_ADDR_OFFSET+3];
+	saddr.sa_data[3] = rsp->data[BCM_MAC_ADDR_OFFSET+2];
+	saddr.sa_data[4] = rsp->data[BCM_MAC_ADDR_OFFSET+1];
+	saddr.sa_data[5] = rsp->data[BCM_MAC_ADDR_OFFSET];
+
 	if (!is_valid_ether_addr((const u8 *)saddr.sa_data))
 		return -ENXIO;
 
