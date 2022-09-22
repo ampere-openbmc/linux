@@ -456,14 +456,6 @@
 	pinctrl-0 = <&pinctrl_rgmii1_default>;
 };
 
-&mac3 {
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_rmii4_default>;
-	clock-names = "MACCLK", "RCLK";
-	use-ncsi;
-};
-
 &emmc_controller {
 	status = "okay";
 };
