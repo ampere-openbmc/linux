@@ -97,6 +97,22 @@
 		};
 	};
 
+	gpio-keys {
+		compatible = "gpio-keys";
+
+		S0_hightemp {
+			label = "S0_HIGHTEMP";
+			gpios = <&gpio ASPEED_GPIO(J, 0) GPIO_ACTIVE_LOW>;
+			linux,code = <ASPEED_GPIO(J, 0)>;
+		};
+
+		S1_hightemp {
+			label = "S1_HIGHTEMP";
+			gpios = <&gpio ASPEED_GPIO(AB, 0) GPIO_ACTIVE_LOW>;
+			linux,code = <ASPEED_GPIO(AB, 0)>;
+		};
+	};
+
 	gpioA0mux: mux-controller {
 		compatible = "gpio-mux";
 		#mux-control-cells = <0>;
