@@ -62,6 +62,10 @@
 		bmc-ready {
 			gpios = <&gpio0 ASPEED_GPIO(W, 5) (GPIO_ACTIVE_HIGH | GPIO_TRANSITORY)>;
 		};
+
+		identify {
+			gpios = <&gpio0 ASPEED_GPIO(S, 3) GPIO_ACTIVE_HIGH>;
+		};
 	};
 
 	gpioI5mux: mux-controller {
