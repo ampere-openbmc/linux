@@ -828,6 +828,10 @@
 	};
 };
 
+&jtag1 {
+	status = "okay";
+};
+
 &adc0 {
 	status = "okay";
 
