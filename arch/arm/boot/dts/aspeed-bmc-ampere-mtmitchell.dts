@@ -538,6 +538,12 @@
 
 &i2c3 {
 	status = "okay";
+	bus-frequency = <1000000>;
+	multi-master;
+	mctp-smbus@10 {
+		compatible = "slave-mqueue";
+		reg = <0x10>;
+	};
 };
 
 &i2c4 {
