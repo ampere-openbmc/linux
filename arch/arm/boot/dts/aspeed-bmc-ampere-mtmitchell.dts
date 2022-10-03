@@ -11,6 +11,7 @@
 	compatible = "ampere,mtmitchell-bmc", "aspeed,ast2600";
 
 	aliases {
+		serial4 = &uart5;
 		i2c20 = &i2c4_bus70_chn0;
 		i2c21 = &i2c4_bus70_chn1;
 		i2c22 = &i2c4_bus70_chn2;
@@ -509,6 +510,10 @@
 	status = "okay";
 };
 
+&uart5 {
+	compatible = "snps,dw-apb-uart";
+};
+
 &i2c0 {
 	status = "okay";
 
@@ -554,7 +559,8 @@
 		reg = <0x16>;
 		vref-supply = <&voltage_mon_reg>;
 		#io-channel-cells = <1>;
-	 };
+		status = "okay";
+	};
 
 	eeprom@50 {
 		compatible = "atmel,24c64";
