@@ -1212,21 +1212,21 @@
 	gpio-line-names =
 	/*A0-A7*/	"","","","","","i2c2-reset-n","i2c6-reset-n","i2c4-reset-n",
 	/*B0-B7*/	"","","","","host0-sysreset-n","host0-pmin-n","","",
-	/*C0-C7*/	"s0-vrd-fault-n","s1-vrd-fault-n","","",
+	/*C0-C7*/	"s0-vrd-fault-n","s1-vrd-fault-n","bmc-debug-mode","",
 			"irq-n","","vrd-sel","spd-sel",
 	/*D0-D7*/	"presence-ps0","presence-ps1","hsc-12vmain-alt2-n","ext-high-temp-n",
 			"","bmc-ncsi-txen","","",
-	/*E0-E7*/	"","","clk50m-bmc-ncsi","","","","","",
+	/*E0-E7*/	"eth-phy-rst-n","eth-phy-int-n","clk50m-bmc-ncsi","","","","","",
 	/*F0-F7*/	"s0-pcp-oc-warn-n","s1-pcp-oc-warn-n","power-chassis-control",
-			"cpu-bios-recover","s0-heartbeat","hs-csout-prochot",
+			"cpu-bios-recover","s0-heartbeat","hs-scout-proc-hot",
 			"s0-vr-hot-n","s1-vr-hot-n",
-	/*G0-G7*/	"","","hsc-12vmain-alt1-n","","","","","",
-	/*H0-H7*/	"","","wd-disable-n","power-chassis-good","","","","",
+	/*G0-G7*/	"","","hsc-12vmain-alt1-n","bmc-salt12-s0-ssif-n","","","","",
+	/*H0-H7*/	"jtag-program-sel","fpga-program-b","wd-disable-n","power-chassis-good","","","","",
 	/*I0-I7*/	"","","","","","adc-sw","power-button","rtc-battery-voltage-read-enable",
 	/*J0-J7*/	"","","","","","","","",
 	/*K0-K7*/	"","","","","","","","",
 	/*L0-L7*/	"","","","","","","","",
-	/*M0-M7*/	"","s0-ddr-save","soc-spi-nor-access","presence-cpu0",
+	/*M0-M7*/	"bmc-uart-cts1","s0-ddr-save","soc-spi-nor-access","presence-cpu0",
 			"s0-rtc-lock","","","",
 	/*N0-N7*/	"hpm-fw-recovery","hpm-stby-rst-n","jtag-sel-s0","led-sw-hb",
 			"jtag-dbgr-prsnt-n","s1-heartbeat","","",
@@ -1236,18 +1236,18 @@
 	/*Q0-Q7*/	"","","","","","","","",
 	/*R0-R7*/	"","","","","","","","",
 	/*S0-S7*/	"","","identify-button","led-identify",
-			"s1-ddr-save","spi-nor-access","sys-pgood","presence-cpu1",
+			"s1-ddr-save","spi-nor-access","host0-ready","presence-cpu1",
 	/*T0-T7*/	"","","","","","","","",
 	/*U0-U7*/	"","","","","","","","",
 	/*V0-V7*/	"s0-hightemp-n","s0-fault-alert","s0-sys-auth-failure-n",
-			"host0-reboot-ack-n","host0-ready","host0-shd-req-n",
+			"host0-reboot-ack-n","s0-fw-boot-ok","host0-shd-req-n",
 			"host0-shd-ack-n","s0-overtemp-n",
-	/*W0-W7*/	"","ocp-main-pwren","ocp-pgood","",
+	/*W0-W7*/	"","ocp-main-pwren","ocp-pgood","s1-pcp-pgood",
 			"bmc-ok","bmc-ready","spi0-program-sel","spi0-backup-sel",
 	/*X0-X7*/	"i2c-backup-sel","s1-fault-alert","s1-fw-boot-ok",
 			"s1-hightemp-n","s0-spi-auth-fail-n","s1-sys-auth-failure-n",
-			"s1-overtemp-n","s1-spi-auth-fail-n",
-	/*Y0-Y7*/	"","","","","","","","host0-special-boot",
+			"s1-overtemp-n","cpld-s1-spi-auth-fail-n",
+	/*Y0-Y7*/	"","","","","","","bmc-spi-fm-boot-abr-pd","host0-special-boot",
 	/*Z0-Z7*/	"reset-button","ps0-pgood","ps1-pgood","","","","","";
 
 	ocp-aux-pwren-hog {
@@ -1261,9 +1261,10 @@
 &gpio1 {
 	gpio-line-names =
 	/*18A0-18A7*/	"","","","","","","","",
-	/*18B0-18B7*/	"","","","","","","s0-soc-pgood","",
+	/*18B0-18B7*/	"","","","","emmc-rst-n","","s0-soc-pgood","",
 	/*18C0-18C7*/	"uart1-mode0","uart1-mode1","uart2-mode0","uart2-mode1",
 			"uart3-mode0","uart3-mode1","uart4-mode0","uart4-mode1",
 	/*18D0-18D7*/	"","","","","","","","",
 	/*18E0-18E3*/	"","","","";
 };
+
