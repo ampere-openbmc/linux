@@ -488,7 +488,7 @@
 	flash@0 {
 		status = "okay";
 		m25p,fast-read;
-		label = "pnor";
+		label = "hnor";
 		spi-max-frequency = <20000000>;
 	};
 };
