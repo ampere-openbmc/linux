@@ -53,6 +53,17 @@
 		regulator-always-on;
 	};
 
+	leds {
+		compatible = "gpio-leds";
+		/*
+		 * Use gpio-leds to configure GPIOW5 (bmc-ready) pin to be reseted when
+		 * watchdog timeout.
+		 */
+		bmc-ready {
+			gpios = <&gpio0 ASPEED_GPIO(W, 5) (GPIO_ACTIVE_HIGH | GPIO_TRANSITORY)>;
+		};
+	};
+
 	gpioI5mux: mux-controller {
 		compatible = "gpio-mux";
 		#mux-control-cells = <0>;
