@@ -10,6 +10,105 @@
 	model = "Ampere Mt.Mitchell BMC";
 	compatible = "ampere,mtmitchell-bmc", "aspeed,ast2600";
 
+	aliases {
+		i2c20 = &i2c4_bus70_chn0;
+		i2c21 = &i2c4_bus70_chn1;
+		i2c22 = &i2c4_bus70_chn2;
+		i2c23 = &i2c4_bus70_chn3;
+
+		/*
+		 *  Riser and OCP card
+		 *  i2c mux 5-0070, 8 child channels assigned
+		 *  with bus number from 30 to 37
+		 */
+
+		i2c30 = &bus70_chn0;
+		i2c31 = &bus70_chn1;
+		i2c32 = &bus70_chn2;
+		i2c33 = &bus70_chn3;
+		i2c34 = &bus70_chn4;
+		i2c35 = &bus70_chn5;
+		i2c36 = &bus70_chn6;
+		i2c37 = &bus70_chn7;
+
+		/*
+		 *  Rear Backplane
+		 *  i2c mux 9-0072 channel 1-0071, 4 child channels assigned
+		 *  with bus number from 40 to 43
+		 */
+
+		i2c40 = &bus72_mux1_chn0;
+		i2c41 = &bus72_mux1_chn1;
+		i2c42 = &bus72_mux1_chn2;
+		i2c43 = &bus72_mux1_chn3;
+
+		/*
+		 *  Rear Backplane
+		 *  i2c mux 9-0072 channel 3-0071, 4 child channels assigned
+		 *  with bus number from 44 to 47
+		 */
+
+		i2c44 = &bus72_mux3_chn0;
+		i2c45 = &bus72_mux3_chn1;
+		i2c46 = &bus72_mux3_chn2;
+		i2c47 = &bus72_mux3_chn3;
+
+		/*
+		 *  Front Backplane
+		 *  i2c mux 9-0072 channel 0-0071, 8 child channels assigned
+		 *  with bus number from 56 to 63. NVME label 8 to 15.
+		 */
+		i2c101 = &bus9_mux72_chn0;
+		i2c56 = &bus72_mux0_chn0;
+		i2c57 = &bus72_mux0_chn1;
+		i2c58 = &bus72_mux0_chn2;
+		i2c59 = &bus72_mux0_chn3;
+		i2c60 = &bus72_mux0_chn4;
+		i2c61 = &bus72_mux0_chn5;
+		i2c62 = &bus72_mux0_chn6;
+		i2c63 = &bus72_mux0_chn7;
+
+		/*
+		 *  Front Backplane
+		 *  i2c mux 9-0072 channel 2-0071, 8 child channels assigned
+		 *  with bus number from 64 to 71. NVME label 16 to 23.
+		 */
+		i2c102 = &bus9_mux72_chn2;
+		i2c64 = &bus72_mux2_chn0;
+		i2c65 = &bus72_mux2_chn1;
+		i2c66 = &bus72_mux2_chn2;
+		i2c67 = &bus72_mux2_chn3;
+		i2c68 = &bus72_mux2_chn4;
+		i2c69 = &bus72_mux2_chn5;
+		i2c70 = &bus72_mux2_chn6;
+		i2c71 = &bus72_mux2_chn7;
+
+		/*
+		 *  Front Backplane
+		 *  i2c mux 9-0072 channel 4-0071, 8 child channels assigned
+		 *  with bus number from 48 to 55. NVME 0 to 7
+		 */
+		i2c100 = &bus9_mux72_chn4;
+		i2c48 = &bus72_mux4_chn0;
+		i2c49 = &bus72_mux4_chn1;
+		i2c50 = &bus72_mux4_chn2;
+		i2c51 = &bus72_mux4_chn3;
+		i2c52 = &bus72_mux4_chn4;
+		i2c53 = &bus72_mux4_chn5;
+		i2c54 = &bus72_mux4_chn6;
+		i2c55 = &bus72_mux4_chn7;
+
+	    /*
+		 *  M.2 Riser
+		 *  i2c mux 9-0072 channel 7-0070, 2 child channels assigned
+		 *  with bus number from 80 to 81
+		 */
+		i2c80 = &bus72_mux7_chn0;
+		i2c81 = &bus72_mux7_chn1;
+
+
+	};
+
 	chosen {
 		stdout-path = &uart5;
 	};
@@ -535,6 +634,47 @@
 		#size-cells = <0>;
 		reg = <0x70>;
 		i2c-mux-idle-disconnect;
+
+		bus70_chn0: i2c@0 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x0>;
+		};
+		bus70_chn1: i2c@1 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x1>;
+		};
+		bus70_chn2: i2c@2 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x2>;
+		};
+		bus70_chn3: i2c@3 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x3>;
+		};
+		bus70_chn4: i2c@4 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x4>;
+		};
+		bus70_chn5: i2c@5 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x5>;
+		};
+		bus70_chn6: i2c@6 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x6>;
+		};
+		bus70_chn7: i2c@7 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x7>;
+		};
 	};
 };
 
@@ -572,6 +712,321 @@
 
 &i2c9 {
 	status = "okay";
+	i2c-mux@72 {
+		compatible = "nxp,pca9548";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		reg = <0x72>;
+		i2c-mux-idle-disconnect;
+
+		bus9_mux72_chn0: i2c@0 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x0>;
+
+			eeprom@50 {
+				compatible = "atmel,24c64";
+				reg = <0x50>;
+				pagesize = <32>;
+			};
+
+			i2c-mux@71 {
+				compatible = "nxp,pca9548";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reg = <0x71>;
+				i2c-mux-idle-disconnect;
+
+				bus72_mux0_chn0: i2c@0 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x0>;
+				};
+				bus72_mux0_chn1: i2c@1 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x1>;
+				};
+				bus72_mux0_chn2: i2c@2 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x2>;
+				};
+				bus72_mux0_chn3: i2c@3 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x3>;
+				};
+				bus72_mux0_chn4: i2c@4 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x4>;
+				};
+				bus72_mux0_chn5: i2c@5 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x5>;
+				};
+				bus72_mux0_chn6: i2c@6 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x6>;
+				};
+				bus72_mux0_chn7: i2c@7 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x7>;
+				};
+			};
+
+			tmp432@4c {
+				compatible = "ti,tmp75";
+				reg = <0x4c>;
+			};
+		};
+
+		i2c@1 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x1>;
+
+			i2c-mux@71 {
+				compatible = "nxp,pca9546";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reg = <0x71>;
+				i2c-mux-idle-disconnect;
+
+				bus72_mux1_chn0: i2c@0 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x0>;
+				};
+				bus72_mux1_chn1: i2c@1 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x1>;
+				};
+				bus72_mux1_chn2: i2c@2 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x2>;
+				};
+				bus72_mux1_chn3: i2c@3 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x3>;
+				};
+			};
+
+			tmp432@4c {
+				compatible = "ti,tmp75";
+				reg = <0x4c>;
+			};
+		};
+
+		bus9_mux72_chn2: i2c@2 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x2>;
+
+			eeprom@50 {
+				compatible = "atmel,24c64";
+				reg = <0x50>;
+				pagesize = <32>;
+			};
+
+			i2c-mux@71 {
+				compatible = "nxp,pca9548";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reg = <0x71>;
+				i2c-mux-idle-disconnect;
+
+				bus72_mux2_chn0: i2c@0 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x0>;
+				};
+				bus72_mux2_chn1: i2c@1 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x1>;
+				};
+				bus72_mux2_chn2: i2c@2 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x2>;
+				};
+				bus72_mux2_chn3: i2c@3 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x3>;
+				};
+				bus72_mux2_chn4: i2c@4 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x4>;
+				};
+				bus72_mux2_chn5: i2c@5 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x5>;
+				};
+				bus72_mux2_chn6: i2c@6 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x6>;
+				};
+				bus72_mux2_chn7: i2c@7 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x7>;
+				};
+			};
+
+			tmp432@4c {
+				compatible = "ti,tmp75";
+				reg = <0x4c>;
+			};
+		};
+
+		i2c@3 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x3>;
+
+			i2c-mux@71 {
+				compatible = "nxp,pca9546";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reg = <0x71>;
+				i2c-mux-idle-disconnect;
+
+				bus72_mux3_chn0: i2c@0 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x0>;
+				};
+				bus72_mux3_chn1: i2c@1 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x1>;
+				};
+				bus72_mux3_chn2: i2c@2 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x2>;
+				};
+				bus72_mux3_chn3: i2c@3 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x3>;
+				};
+			};
+
+			tmp432@4c {
+				compatible = "ti,tmp75";
+				reg = <0x4c>;
+			};
+		};
+
+		bus9_mux72_chn4: i2c@4 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x4>;
+
+			eeprom@50 {
+				compatible = "atmel,24c64";
+				reg = <0x50>;
+				pagesize = <32>;
+			};
+
+			i2c-mux@71 {
+				compatible = "nxp,pca9548";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reg = <0x71>;
+				i2c-mux-idle-disconnect;
+
+				bus72_mux4_chn0: i2c@0 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x0>;
+				};
+				bus72_mux4_chn1: i2c@1 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x1>;
+				};
+				bus72_mux4_chn2: i2c@2 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x2>;
+				};
+				bus72_mux4_chn3: i2c@3 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x3>;
+				};
+				bus72_mux4_chn4: i2c@4 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x4>;
+				};
+				bus72_mux4_chn5: i2c@5 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x5>;
+				};
+				bus72_mux4_chn6: i2c@6 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x6>;
+				};
+				bus72_mux4_chn7: i2c@7 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x7>;
+				};
+			};
+
+			tmp432@4c {
+				compatible = "ti,tmp75";
+				reg = <0x4c>;
+			};
+		};
+
+		i2c@7 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x7>;
+
+			i2c-mux@70 {
+				compatible = "nxp,pca9546";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reg = <0x70>;
+				i2c-mux-idle-disconnect;
+
+				bus72_mux7_chn0: i2c@0 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x0>;
+				};
+
+				bus72_mux7_chn1: i2c@1 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x1>;
+				};
+			};
+		};
+	};
+};
+
+&i2c10 {
+	status = "okay";
 };
 
 &i2c11 {
@@ -580,6 +1035,14 @@
 		compatible = "ssif-bmc";
 		reg = <0x10>;
 	};
+};
+
+&i2c12 {
+	status = "okay";
+};
+
+&i2c13 {
+	status = "okay";
 };
 
 &i2c14 {
@@ -594,6 +1057,10 @@
 		compatible = "ti,tmp175";
 		reg = <0x35>;
 	};
+};
+
+&i2c15 {
+	status = "okay";
 };
 
 &adc0 {
