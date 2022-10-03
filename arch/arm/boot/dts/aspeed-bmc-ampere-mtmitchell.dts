@@ -1069,6 +1069,10 @@
 	status = "okay";
 };
 
+&jtag1 {
+	status = "okay";
+};
+
 &adc0 {
 	ref_voltage = <2500>;
 	status = "okay";
