@@ -13,6 +13,7 @@
 #include <linux/jiffies.h>
 #include <linux/module.h>
 #include <linux/slab.h>
+#include <linux/property.h>
 
 /* MAX31790 registers */
 #define MAX31790_REG_GLOBAL_CONFIG	0x00
@@ -65,6 +66,7 @@ struct max31790_data {
 	u16 tach[NR_CHANNEL * 2];
 	u16 pwm[NR_CHANNEL];
 	u16 target_count[NR_CHANNEL];
+	u32 mode[NR_CHANNEL];
 };
 
 static struct max31790_data *max31790_update_device(struct device *dev)
@@ -96,7 +98,6 @@ static struct max31790_data *max31790_update_device(struct device *dev)
 			if (rv < 0)
 				goto abort;
 			data->tach[i] = rv;
-
 			if (data->fan_config[i]
 			    & MAX31790_FAN_CFG_TACH_INPUT) {
 				rv = i2c_smbus_read_word_swapped(client,
@@ -490,6 +491,13 @@ static int max31790_init_client(struct i2c_client *client,
 				MAX31790_REG_FAN_CONFIG(i));
 		if (rv < 0)
 			return rv;
+
+		if (data->mode[i]) {
+			rv |= MAX31790_FAN_CFG_TACH_INPUT;
+		} else {
+			rv &= ~(MAX31790_FAN_CFG_TACH_INPUT);
+		}
+
 		data->fan_config[i] = rv;
 
 		rv = i2c_smbus_read_byte_data(client,
@@ -509,6 +517,7 @@ static int max31790_probe(struct i2c_client *client)
 	struct max31790_data *data;
 	struct device *hwmon_dev;
 	int err;
+	int i;
 
 	if (!i2c_check_functionality(adapter,
 			I2C_FUNC_SMBUS_BYTE_DATA | I2C_FUNC_SMBUS_WORD_DATA))
@@ -520,6 +529,16 @@ static int max31790_probe(struct i2c_client *client)
 
 	data->client = client;
 	mutex_init(&data->update_lock);
+
+	if (device_property_present(dev,"pwm-to-tach")) {
+		err = device_property_read_u32_array(dev,"pwm-to-tach",data->mode,NR_CHANNEL);
+		if (err < 0)
+			return err;
+	} else {
+		for (i = 0; i < NR_CHANNEL; i++) {
+			data->mode[i]=0;
+		}
+	}
 
 	/*
 	 * Initialize the max31790 chip
