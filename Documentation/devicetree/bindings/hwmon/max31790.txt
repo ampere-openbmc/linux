@@ -1,0 +1,30 @@
+Bindings for the Maxim MAX31790 Fan Controller
+==========================================================
+
+Reference:
+
+https://datasheets.maximintegrated.com/en/ds/MAX31790.pdf
+
+The MAX31790 controls the speeds of up to six fans
+using six independent PWM outputs. The desired fan
+speeds (or PWM duty cycles) are written through the I2C
+interface.
+
+Required properties:
+- compatible     : Must be "maxim,max31790"
+- reg            : I2C slave address
+- pwm-to-tach    : An array of six integers respond to six pwm channels for
+                   configuring the pwm to tach mode.
+
+                   When set to 0, the associated PWMOUT produces a PWM waveform 
+                   for control of fan speed. When set to 1, PWMOUT becomes a TACH input
+
+                   Without the "pwm-to-tach" properties, by default "pwm-to-tach" is <0 0 0 0 0 0>
+
+Example: Set PWM channel 5-6 become TACH input mode
+
+        fans@20 {
+                compatible = "maxim,max31790";
+                reg = <0x20>;
+                pwm-to-tach = <0 0 0 0 1 1>;
+        };
