@@ -836,6 +836,10 @@
 		&pinctrl_adc2_default>;
 };
 
+&chassis{
+	status = "okay";
+};
+
 &vhub {
 	status = "okay";
 };
