@@ -320,6 +320,8 @@ static int max31790_read_pwm(struct device *dev, u32 attr, int channel,
 			*val = 0;
 		else if (fan_config & MAX31790_FAN_CFG_RPM_MODE)
 			*val = 2;
+		else if (fan_config & MAX31790_FAN_CFG_TACH_INPUT_EN)
+			*val = 3;
 		else
 			*val = 1;
 		return 0;
@@ -369,6 +371,9 @@ static int max31790_write_pwm(struct device *dev, u32 attr, int channel,
 			 * value in the cache.
 			 */
 			fan_config |= (MAX31790_FAN_CFG_RPM_MODE | MAX31790_FAN_CFG_TACH_INPUT_EN);
+		} else if (val == 3) {
+			fan_config &= ~(MAX31790_FAN_CFG_CTRL_MON | MAX31790_FAN_CFG_RPM_MODE);
+			fan_config |= MAX31790_FAN_CFG_TACH_INPUT_EN;
 		} else {
 			err = -EINVAL;
 			break;
@@ -484,7 +489,7 @@ static const struct hwmon_chip_info max31790_chip_info = {
 static int max31790_init_client(struct i2c_client *client,
 				struct max31790_data *data)
 {
-	int i, rv;
+	int i, rv, pre_config;
 
 	for (i = 0; i < NR_CHANNEL; i++) {
 		rv = i2c_smbus_read_byte_data(client,
@@ -492,10 +497,24 @@ static int max31790_init_client(struct i2c_client *client,
 		if (rv < 0)
 			return rv;
 
+		/*
+		 * Initialize mode 3 (Monitor speed and control PWM) by default
+		 */
+		pre_config = rv;
+
+		rv &= ~(MAX31790_FAN_CFG_CTRL_MON | MAX31790_FAN_CFG_RPM_MODE);
+		rv |= MAX31790_FAN_CFG_TACH_INPUT_EN;
+
 		if (data->mode[i]) {
 			rv |= MAX31790_FAN_CFG_TACH_INPUT;
 		} else {
 			rv &= ~(MAX31790_FAN_CFG_TACH_INPUT);
+		}
+
+		if (rv != pre_config) {
+			if (i2c_smbus_write_byte_data(client, MAX31790_REG_FAN_CONFIG(i),
+							rv))
+				return rv;
 		}
 
 		data->fan_config[i] = rv;
