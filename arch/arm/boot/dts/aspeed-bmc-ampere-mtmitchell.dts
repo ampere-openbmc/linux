@@ -12,6 +12,8 @@
 
 	aliases {
 		serial4 = &uart5;
+		serial7 = &uart8;
+		serial8 = &uart9;
 		i2c20 = &i2c4_bus70_chn0;
 		i2c21 = &i2c4_bus70_chn1;
 		i2c22 = &i2c4_bus70_chn2;
@@ -512,6 +514,14 @@
 
 &uart5 {
 	compatible = "snps,dw-apb-uart";
+};
+
+&uart8 {
+        status = "okay";
+};
+
+&uart9 {
+        status = "okay";
 };
 
 &i2c0 {
