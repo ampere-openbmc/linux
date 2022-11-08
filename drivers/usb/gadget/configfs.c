@@ -4,11 +4,22 @@
 #include <linux/slab.h>
 #include <linux/device.h>
 #include <linux/nls.h>
+#include <linux/idr.h>
 #include <linux/usb/composite.h>
 #include <linux/usb/gadget_configfs.h>
 #include "configfs.h"
 #include "u_f.h"
 #include "u_os_desc.h"
+
+static DEFINE_IDA(driver_id_numbers);
+
+/*
+ * Driver name has the form of "configfs-gadget.%d", where %d
+ * is id allocated by ida_alloc(). The max value returns by
+ * ida_alloc() is INT_MAX, in 64-bit system, it is about nine
+ * quintillion: 19 digits in decimal. Set the max length to 35.
+ */
+#define DRIVER_NAME_LENGTH_MAX 35
 
 int check_user_usb_string(const char *name,
 		struct usb_gadget_strings *stringtab_dev)
@@ -51,6 +62,9 @@ struct gadget_info {
 	char qw_sign[OS_STRING_QW_SIGN_LEN];
 	spinlock_t spinlock;
 	bool unbind;
+
+	/* Make driver names unique */
+	int driver_id_number;
 };
 
 static inline struct gadget_info *to_gadget_info(struct config_item *item)
@@ -1581,6 +1595,8 @@ static struct config_group *gadgets_make(
 		const char *name)
 {
 	struct gadget_info *gi;
+	char *driver_name;
+	int ret;
 
 	gi = kzalloc(sizeof(*gi), GFP_KERNEL);
 	if (!gi)
@@ -1622,6 +1638,22 @@ static struct config_group *gadgets_make(
 
 	gi->composite.gadget_driver = configfs_driver_template;
 
+	ret = ida_alloc(&driver_id_numbers, GFP_KERNEL);
+	if (ret < 0)
+		goto err;
+	gi->driver_id_number = ret;
+
+	driver_name = kmalloc(DRIVER_NAME_LENGTH_MAX, GFP_KERNEL);
+	if (!driver_name)
+		goto out_free_driver_id_number;
+
+	ret = scnprintf(driver_name, DRIVER_NAME_LENGTH_MAX,
+			"configfs-gadget.%d", gi->driver_id_number);
+	if (ret < 0)
+		goto out_free_driver_name;
+
+	gi->composite.gadget_driver.driver.name = driver_name;
+
 	gi->composite.gadget_driver.function = kstrdup(name, GFP_KERNEL);
 	gi->composite.name = gi->composite.gadget_driver.function;
 
@@ -1629,6 +1661,11 @@ static struct config_group *gadgets_make(
 		goto err;
 
 	return &gi->group;
+
+out_free_driver_name:
+	kfree(driver_name);
+out_free_driver_id_number:
+	ida_free(&driver_id_numbers, gi->driver_id_number);
 err:
 	kfree(gi);
 	return ERR_PTR(-ENOMEM);
@@ -1636,6 +1673,12 @@ err:
 
 static void gadgets_drop(struct config_group *group, struct config_item *item)
 {
+	struct gadget_info *gi = to_gadget_info(item);
+
+	mutex_lock(&gi->lock);
+	kfree(gi->composite.gadget_driver.driver.name);
+	ida_free(&driver_id_numbers, gi->driver_id_number);
+	mutex_unlock(&gi->lock);
 	config_item_put(item);
 }
 
