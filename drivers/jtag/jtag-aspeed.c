@@ -1526,6 +1526,31 @@ out:
 	return ret;
 }
 
+static int aspeed_jtag_trst_set(struct jtag *jtag, u32 active)
+{
+	struct aspeed_jtag *aspeed_jtag = jtag_priv(jtag);
+	u32 val;
+	unsigned int regs = aspeed_jtag_read(aspeed_jtag, ASPEED_JTAG_EC);
+
+	if (aspeed_jtag->scupin_ctrl) {
+		val = readl(aspeed_jtag->scupin_ctrl);
+		/* Enable JTAG MASTER pins */
+		writel((val | ASPEED_2600_SCU_ENABLE_PIN_TRSTN),
+			aspeed_jtag->scupin_ctrl);
+	}
+
+	if (active == 1)
+		aspeed_jtag_write(aspeed_jtag, regs | (1 << 31), ASPEED_JTAG_EC);
+	else
+		aspeed_jtag_write(aspeed_jtag, regs & (~(1 << 31)), ASPEED_JTAG_EC);
+
+	if (aspeed_jtag->scupin_ctrl) {
+		writel(val, aspeed_jtag->scupin_ctrl);
+	}
+
+	return 0;
+}
+
 #ifdef CONFIG_JTAG_ASPEED_LEGACY_UIO
 static u32 g_sw_tdi;
 static u32 g_sw_tck;
@@ -1744,6 +1769,7 @@ static const struct jtag_ops aspeed_jtag_ops = {
 	.status_set = aspeed_jtag_status_set,
 	.xfer = aspeed_jtag_xfer,
 	.mode_set = aspeed_jtag_mode_set,
+	.trst_set = aspeed_jtag_trst_set,
 	.bitbang = aspeed_jtag_bitbang,
 	.enable = aspeed_jtag_enable,
 	.disable = aspeed_jtag_disable,
