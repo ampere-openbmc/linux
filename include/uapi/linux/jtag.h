@@ -190,5 +190,6 @@ struct jtag_mode {
 #define JTAG_GIOCSTATUS _IOWR(__JTAG_IOCTL_MAGIC, 4, enum jtag_endstate)
 #define JTAG_SIOCMODE	_IOW(__JTAG_IOCTL_MAGIC, 5, unsigned int)
 #define JTAG_IOCBITBANG	_IOW(__JTAG_IOCTL_MAGIC, 6, unsigned int)
+#define JTAG_SIOCTRST   _IOW(__JTAG_IOCTL_MAGIC, 7, unsigned int)
 
 #endif /* __UAPI_LINUX_JTAG_H */
