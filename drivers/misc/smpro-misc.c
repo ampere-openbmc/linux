@@ -110,6 +110,26 @@ static struct attribute *smpro_misc_attrs[] = {
 	NULL
 };
 
+static ssize_t reg_read(struct file *filp, struct kobject *kobj, struct bin_attribute *attr,
+			char *buf, loff_t off, size_t count)
+{
+	struct smpro_misc *misc = dev_get_drvdata(kobj_to_dev(kobj));
+	int ret = regmap_read(misc->regmap, off, (unsigned int *)buf);
+
+	return ret ? ret : 2;
+}
+
+static ssize_t reg_write(struct file *filp, struct kobject *kobj, struct bin_attribute *attr,
+			 char *buf, loff_t off, size_t count)
+{
+	struct smpro_misc *misc = dev_get_drvdata(kobj_to_dev(kobj));
+	int ret = regmap_write(misc->regmap, off, *((unsigned int *)buf));
+
+	return ret ? ret : 2;
+}
+
+static BIN_ATTR_RW(reg, 0xFF);
+
 ATTRIBUTE_GROUPS(smpro_misc);
 
 static int smpro_misc_probe(struct platform_device *pdev)
@@ -126,11 +146,20 @@ static int smpro_misc_probe(struct platform_device *pdev)
 	if (!misc->regmap)
 		return -ENODEV;
 
+	/* create the sysfs bin file */
+	return sysfs_create_bin_file(&pdev->dev.kobj, &bin_attr_reg);
+}
+
+static int smpro_misc_remove(struct platform_device *pdev)
+{
+	sysfs_remove_bin_file(&pdev->dev.kobj, &bin_attr_reg);
+
 	return 0;
 }
 
 static struct platform_driver smpro_misc_driver = {
 	.probe		= smpro_misc_probe,
+	.remove		= smpro_misc_remove,
 	.driver = {
 		.name	= "smpro-misc",
 		.dev_groups = smpro_misc_groups,
