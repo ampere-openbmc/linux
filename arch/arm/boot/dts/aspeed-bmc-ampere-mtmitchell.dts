@@ -677,11 +677,23 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <0x0>;
+			/* There is an emulated TMP421 sensor
+			at this slot, not a real TMP421 device */
+			ocp_temp1: temperature-sensor@1f {
+				compatible = "ti,tmp421";
+				reg = <0x1f>;
+			};
 		};
 		bus70_chn1: i2c@1 {
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <0x1>;
+			/* There is an emulated TMP421 sensor
+			at this slot, not a real TMP421 device */
+			ocp_temp2: temperature-sensor@1f {
+				compatible = "ti,tmp421";
+				reg = <0x1f>;
+			};
 		};
 		bus70_chn2: i2c@2 {
 			#address-cells = <1>;
