@@ -108,7 +108,7 @@ static struct max31790_data *max31790_update_device(struct device *dev)
 				data->tach[NR_CHANNEL + i] = rv;
 			} else {
 				rv = i2c_smbus_read_word_swapped(client,
-						MAX31790_REG_PWM_DUTY_CYCLE(i));
+						MAX31790_REG_PWMOUT(i));
 				if (rv < 0)
 					goto abort;
 				data->pwm[i] = rv;
