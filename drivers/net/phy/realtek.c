@@ -73,6 +73,23 @@
 #define RTL_GENERIC_PHYID			0x001cc800
 #define RTL_8211FVD_PHYID			0x001cc878
 
+/* Configure LED's behavior for RTL8211F */
+#define RTL8211F_PAGSEL                0x1f
+#define RTL8211F_PAGSEL_P0             0x0
+#define RTL8211F_PAGSEL_EXTPAGE        0x0d04
+#define RTL8211F_LCR                   0x10  /* LED Control Register */
+/* 
+ * Only set LED0_ACT bit to indicator transmitting or receiving for all speeds.
+ * Don't set LED1_ACT bit and LED2_ACT bit.
+ * LED1/LED2 should be steady, their state to indicator the running speed.
+ */
+#define RTL8211F_LCR_ACT_LED0          0x10
+#define RTL8211F_LCR_LINK_LED0        (0x1 | 0x2 | 0x8)
+#define RTL8211F_LCR_LINK_LED1         0x40
+#define RTL8211F_LCR_LINK_LED2         0x2000
+#define RTL8211F_EEE_LCR               0x11  /* EEE LED Control Register */
+#define RTL8211F_EEE_DISABLE           0x0
+
 MODULE_DESCRIPTION("Realtek PHY driver");
 MODULE_AUTHOR("Johnson Leung");
 MODULE_LICENSE("GPL");
@@ -342,6 +359,23 @@ static int rtl8211c_config_init(struct phy_device *phydev)
 			    CTL1000_ENABLE_MASTER | CTL1000_AS_MASTER);
 }
 
+static void rtl8211f_setup_led(struct phy_device *phydev)
+{
+	u32 phy_led_setting;
+	printk("SET PHY LED for REALTEK_RTL8211F \n");
+
+	phy_led_setting =  (RTL8211F_LCR_ACT_LED0 |
+						RTL8211F_LCR_LINK_LED0 |
+						RTL8211F_LCR_LINK_LED1 |
+						RTL8211F_LCR_LINK_LED2 );
+	phy_write(phydev, RTL8211F_PAGSEL, RTL8211F_PAGSEL_EXTPAGE);
+	phy_write(phydev, RTL8211F_LCR, phy_led_setting);
+	phy_write(phydev, RTL8211F_EEE_LCR, RTL8211F_EEE_DISABLE);
+
+	/* restore to default page 0 */
+	phy_write(phydev, RTL8211F_PAGSEL, RTL8211F_PAGSEL_P0);
+}
+
 static int rtl8211f_config_init(struct phy_device *phydev)
 {
 	struct rtl821x_priv *priv = phydev->priv;
@@ -357,6 +391,9 @@ static int rtl8211f_config_init(struct phy_device *phydev)
 			ERR_PTR(ret));
 		return ret;
 	}
+
+	/* Set up LED behavior for PHY RTL8211F */
+	rtl8211f_setup_led(phydev);
 
 	switch (phydev->interface) {
 	case PHY_INTERFACE_MODE_RGMII:
