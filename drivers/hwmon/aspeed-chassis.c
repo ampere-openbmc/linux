@@ -157,6 +157,17 @@ static void aspeed_chassis_int_ctrl(struct aspeed_chassis *chassis, bool ctrl)
 	writel(chassis_ctrl.value, chassis->base);
 }
 
+static void aspeed_chassis_init_flush(struct aspeed_chassis *chassis)
+{
+	union chassis_ctrl_register chassis_ctrl;
+	dev_info(chassis->dev, "Initially flushing intrusion status...");
+	chassis_ctrl.value = readl(chassis->base);
+	chassis_ctrl.fields.intrusion_status_clear = 1;
+	writel(chassis_ctrl.value, chassis->base);
+	chassis_ctrl.fields.intrusion_status_clear = 0;
+	writel(chassis_ctrl.value, chassis->base);
+}
+
 static const struct of_device_id aspeed_chassis_of_table[] = {
 	{ .compatible = "aspeed,ast2600-chassis" },
 	{}
@@ -195,7 +206,7 @@ static int aspeed_chassis_probe(struct platform_device *pdev)
 #else
 	aspeed_chassis_int_ctrl(priv, false);
 #endif
-
+	aspeed_chassis_init_flush(priv);
 	priv->groups[0] = &intrusion_dev_group;
 	priv->groups[1] = NULL;
 
