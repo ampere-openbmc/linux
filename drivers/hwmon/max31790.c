@@ -17,6 +17,7 @@
 
 /* MAX31790 registers */
 #define MAX31790_REG_GLOBAL_CONFIG	0x00
+#define MAX31790_REG_PWM_FREQ	0x01
 #define MAX31790_REG_FAN_CONFIG(ch)	(0x02 + (ch))
 #define MAX31790_REG_FAN_DYNAMICS(ch)	(0x08 + (ch))
 #define MAX31790_REG_FAN_FAULT_STATUS2	0x10
@@ -37,6 +38,10 @@
 #define MAX31790_FAN_DYN_SR_MASK	0xE0
 #define SR_FROM_REG(reg)		(((reg) & MAX31790_FAN_DYN_SR_MASK) \
 					 >> MAX31790_FAN_DYN_SR_SHIFT)
+
+/* Fan PWM Frequency bits*/
+#define MAX31790_REG_PWM_456_FREQ_25KHZ		(0x0B << 4)
+#define MAX31790_REG_PWM_123_FREQ_25KHZ		0x0B
 
 #define FAN_RPM_MIN			120
 #define FAN_RPM_MAX			7864320
@@ -490,6 +495,17 @@ static int max31790_init_client(struct i2c_client *client,
 				struct max31790_data *data)
 {
 	int i, rv, pre_config;
+
+	/*
+	 * Select the PWM OUT frequency
+	 * Workarround: Set PWM OUT frequency is 25kHz
+	 * From Mt.Mitchell PVT, the FREQ_START = VCC from hardware setting
+	 */
+
+	if (i2c_smbus_write_byte_data(client, MAX31790_REG_PWM_FREQ, 
+							MAX31790_REG_PWM_123_FREQ_25KHZ | 
+							MAX31790_REG_PWM_456_FREQ_25KHZ))
+		return 1;
 
 	for (i = 0; i < NR_CHANNEL; i++) {
 		rv = i2c_smbus_read_byte_data(client,
