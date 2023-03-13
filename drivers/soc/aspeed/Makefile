@@ -7,3 +7,4 @@ obj-$(CONFIG_ASPEED_SOCINFO)		+= aspeed-socinfo.o
 obj-$(CONFIG_ASPEED_SBC)		+= aspeed-sbc.o
 obj-$(CONFIG_ASPEED_XDMA)		+= aspeed-xdma.o
 obj-$(CONFIG_ASPEED_MCTP_CTRL)	+= aspeed-mctp-ctrl.o
+obj-$(CONFIG_ASPEED_UDMA)		+= aspeed-udma.o

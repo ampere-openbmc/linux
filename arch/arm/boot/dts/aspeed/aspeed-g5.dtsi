@@ -403,7 +403,7 @@
 			};
 
 			uart1: serial@1e783000 {
-				compatible = "ns16550a";
+				compatible = "aspeed,ast2500-uart", "ns16550a";
 				reg = <0x1e783000 0x20>;
 				reg-shift = <2>;
 				interrupts = <9>;
@@ -414,7 +414,7 @@
 			};
 
 			uart5: serial@1e784000 {
-				compatible = "ns16550a";
+				compatible = "aspeed,ast2500-uart", "ns16550a";
 				reg = <0x1e784000 0x20>;
 				reg-shift = <2>;
 				interrupts = <10>;
@@ -572,7 +572,7 @@
 			};
 
 			uart2: serial@1e78d000 {
-				compatible = "ns16550a";
+				compatible = "aspeed,ast2500-uart", "ns16550a";
 				reg = <0x1e78d000 0x20>;
 				reg-shift = <2>;
 				interrupts = <32>;
@@ -583,7 +583,7 @@
 			};
 
 			uart3: serial@1e78e000 {
-				compatible = "ns16550a";
+				compatible = "aspeed,ast2500-uart", "ns16550a";
 				reg = <0x1e78e000 0x20>;
 				reg-shift = <2>;
 				interrupts = <33>;
@@ -594,13 +594,20 @@
 			};
 
 			uart4: serial@1e78f000 {
-				compatible = "ns16550a";
+				compatible = "aspeed,ast2500-uart", "ns16550a";
 				reg = <0x1e78f000 0x20>;
 				reg-shift = <2>;
 				interrupts = <34>;
 				clocks = <&syscon ASPEED_CLK_GATE_UART4CLK>;
 				resets = <&lpc_reset 7>;
 				no-loopback-test;
+				status = "disabled";
+			};
+
+			udma: dma-controller@1e79e000 {
+				compatible = "aspeed,ast2500-udma";
+				reg = <0x1e79e000 0x400>;
+				interrupts = <50>;
 				status = "disabled";
 			};
 		};
