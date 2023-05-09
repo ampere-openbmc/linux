@@ -14,6 +14,7 @@
 	aliases {
 		i2c20 = &i2c4_bus70_chn0;
 		i2c22 = &i2c4_bus70_chn2;
+		i2c24 = &i2c2_bus70_chn0;
 
 		/*
 		 *  I2C OCP alias port
@@ -206,6 +207,28 @@
 
 &i2c2 {
 	status = "okay";
+	i2c-mux@70 {
+		compatible = "nxp,pca9548";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		reg = <0x70>;
+		i2c-mux-idle-disconnect;
+
+		i2c2_bus70_chn0: i2c@0 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x0>;
+			psu@58 {
+				compatible = "pmbus";
+				reg = <0x58>;
+			};
+
+			psu@59 {
+				compatible = "pmbus";
+				reg = <0x59>;
+			};
+		};
+	};
 };
 
 &i2c3 {
