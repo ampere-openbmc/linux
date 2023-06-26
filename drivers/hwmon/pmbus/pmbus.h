@@ -463,6 +463,9 @@ struct pmbus_driver_info {
 
 	/* custom attributes */
 	const struct attribute_group **groups;
+
+	char *mfr_id;
+	char *mfr_model;
 };
 
 /* Regulator ops */
