@@ -2196,20 +2196,22 @@ static int pmbus_add_fan_attributes(struct i2c_client *client,
 			if (!(info->func[page] & pmbus_fan_flags[f]))
 				break;
 
-			if (!pmbus_check_word_register(client, page,
-						       pmbus_fan_registers[f]))
-				break;
+			if (strncmp(info->mfr_id, "DELTA", 5)) {
+				if (!pmbus_check_word_register(client, page,
+							       pmbus_fan_registers[f]))
+					break;
 
-			/*
-			 * Skip fan if not installed.
-			 * Each fan configuration register covers multiple fans,
-			 * so we have to do some magic.
-			 */
-			regval = _pmbus_read_byte_data(client, page,
-				pmbus_fan_config_registers[f]);
-			if (regval < 0 ||
-			    (!(regval & (PB_FAN_1_INSTALLED >> ((f & 1) * 4)))))
-				continue;
+				/*
+				 * Skip fan if not installed.
+				 * Each fan configuration register covers multiple fans,
+				 * so we have to do some magic.
+				 */
+				regval = _pmbus_read_byte_data(client, page,
+					pmbus_fan_config_registers[f]);
+				if (regval < 0 ||
+				    (!(regval & (PB_FAN_1_INSTALLED >> ((f & 1) * 4)))))
+					continue;
+			}
 
 			if (pmbus_add_sensor(data, "fan", "input", index,
 					     page, 0xff, pmbus_fan_registers[f],
