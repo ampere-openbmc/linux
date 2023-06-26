@@ -482,6 +482,9 @@ struct pmbus_driver_info {
 	 */
 	int access_delay;		/* in microseconds */
 	int write_delay;		/* in microseconds */
+
+	char *mfr_id;
+	char *mfr_model;
 };
 
 /* Regulator ops */
