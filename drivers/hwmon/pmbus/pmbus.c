@@ -155,8 +155,27 @@ static int pmbus_identify(struct i2c_client *client,
 		goto abort;
 	}
 
-	/* Try to find sensor groups  */
-	pmbus_find_sensor_groups(client, info);
+	if (!(strncmp(info->mfr_id, "Liteon", 6) || strncmp(info->mfr_model, "PS-2202-5L3", 11))) {
+		info->func[0] =
+			PMBUS_HAVE_VIN | PMBUS_HAVE_IIN | PMBUS_HAVE_PIN |
+			PMBUS_HAVE_VOUT | PMBUS_HAVE_IOUT | PMBUS_HAVE_POUT |
+			PMBUS_HAVE_TEMP  | PMBUS_HAVE_TEMP2 | PMBUS_HAVE_TEMP3 |
+			PMBUS_HAVE_FAN12 | PMBUS_HAVE_STATUS_FAN12 |
+			PMBUS_HAVE_STATUS_VOUT | PMBUS_HAVE_STATUS_IOUT |
+			PMBUS_HAVE_STATUS_INPUT | PMBUS_HAVE_STATUS_TEMP;
+	} else if (!(strncmp(info->mfr_id, "DELTA", 5))) {
+		info->func[0] =
+			PMBUS_HAVE_VIN | PMBUS_HAVE_IIN | PMBUS_HAVE_PIN |
+			PMBUS_HAVE_VOUT | PMBUS_HAVE_IOUT | PMBUS_HAVE_POUT |
+			PMBUS_HAVE_TEMP  | PMBUS_HAVE_TEMP2 | PMBUS_HAVE_TEMP3 |
+			PMBUS_HAVE_FAN12 | PMBUS_HAVE_STATUS_FAN12 |
+			PMBUS_HAVE_STATUS_VOUT | PMBUS_HAVE_STATUS_IOUT |
+			PMBUS_HAVE_STATUS_INPUT | PMBUS_HAVE_STATUS_TEMP;
+	} else {
+		/* Try to find sensor groups  */
+		pmbus_find_sensor_groups(client, info);
+	}
+
 abort:
 	return ret;
 }
@@ -167,6 +186,8 @@ static int pmbus_probe(struct i2c_client *client)
 	struct pmbus_platform_data *pdata = NULL;
 	struct device *dev = &client->dev;
 	struct pmbus_device_info *device_info;
+	u8 buf[I2C_SMBUS_BLOCK_MAX + 1];
+	int ret;
 
 	info = devm_kzalloc(dev, sizeof(struct pmbus_driver_info), GFP_KERNEL);
 	if (!info)
@@ -185,6 +206,26 @@ static int pmbus_probe(struct i2c_client *client)
 	info->pages = device_info->pages;
 	info->identify = pmbus_identify;
 	dev->platform_data = pdata;
+
+	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_ID, buf);
+	if (ret < 0) {
+		dev_err(&client->dev, "Failed to read Manufacturer ID : '%s'\n",buf);
+		return -ENODEV;
+	}
+
+	info->mfr_id = devm_kstrdup(&client->dev, buf, GFP_KERNEL);
+	if (!info->mfr_id)
+		return -ENOMEM;
+
+	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, buf);
+	if (ret < 0) {
+		dev_err(&client->dev, "Failed to read model : '%s'\n",buf);
+		return -ENODEV;
+	}
+
+	info->mfr_model = devm_kstrdup(&client->dev, buf, GFP_KERNEL);
+	if (!info->mfr_model)
+		return -ENOMEM;
 
 	return pmbus_do_probe(client, info);
 }
