@@ -355,7 +355,7 @@ EXPORT_SYMBOL_NS_GPL(pmbus_update_fan, PMBUS);
 int pmbus_read_word_data(struct i2c_client *client, int page, int phase, u8 reg)
 {
 	int rv;
-
+	msleep(10);
 	rv = pmbus_set_page(client, page, phase);
 	if (rv < 0)
 		return rv;
@@ -414,7 +414,7 @@ static int __pmbus_read_word_data(struct i2c_client *client, int page, int reg)
 int pmbus_read_byte_data(struct i2c_client *client, int page, u8 reg)
 {
 	int rv;
-
+	msleep(10);
 	rv = pmbus_set_page(client, page, 0xff);
 	if (rv < 0)
 		return rv;
@@ -458,7 +458,7 @@ static int pmbus_read_block_data(struct i2c_client *client, int page, u8 reg,
 				 char *data_buf)
 {
 	int rv;
-
+	msleep(10);
 	rv = pmbus_set_page(client, page, 0xff);
 	if (rv < 0)
 		return rv;
