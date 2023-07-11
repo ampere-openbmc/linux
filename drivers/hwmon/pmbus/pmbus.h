@@ -10,6 +10,7 @@
 #define PMBUS_H
 
 #include <linux/bitops.h>
+#include <linux/delay.h>
 #include <linux/regulator/driver.h>
 
 /*

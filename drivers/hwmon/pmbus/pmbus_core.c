@@ -593,12 +593,14 @@ static bool pmbus_check_status_register(struct i2c_client *client, int page)
 
 bool pmbus_check_byte_register(struct i2c_client *client, int page, int reg)
 {
+	msleep(10);
 	return pmbus_check_register(client, _pmbus_read_byte_data, page, reg);
 }
 EXPORT_SYMBOL_NS_GPL(pmbus_check_byte_register, PMBUS);
 
 bool pmbus_check_word_register(struct i2c_client *client, int page, int reg)
 {
+	msleep(10);
 	return pmbus_check_register(client, __pmbus_read_word_data, page, reg);
 }
 EXPORT_SYMBOL_NS_GPL(pmbus_check_word_register, PMBUS);
