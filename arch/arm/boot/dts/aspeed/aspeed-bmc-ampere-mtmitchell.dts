@@ -694,11 +694,13 @@
 	fan-controller0@20 {
 		compatible = "maxim,max31790";
 		reg = <0x20>;
+		pwm-to-tach = <0 0 0 0 1 1>;
 	};
 
 	fan-controller1@2f {
 		compatible = "maxim,max31790";
 		reg = <0x2f>;
+		pwm-to-tach = <0 0 0 0 1 1>;
 	};
 };
 
