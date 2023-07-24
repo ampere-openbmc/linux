@@ -557,6 +557,18 @@
 			line-name = "bmc-ocp0-en-n";
 		};
 	};
+
+	max31790@20 {
+		compatible = "maxim,max31790";
+		reg = <0x20>;
+		pwm-to-tach = <0 0 0 0 1 1>;
+	};
+
+	max31790@2f {
+		compatible = "maxim,max31790";
+		reg = <0x2f>;
+		pwm-to-tach = <0 0 0 0 1 1>;
+	};
 };
 
 &i2c9 {
