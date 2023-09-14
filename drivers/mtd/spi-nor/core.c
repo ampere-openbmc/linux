@@ -1792,6 +1792,12 @@ destroy_erase_cmd_list:
 	return ret;
 }
 
+/* variable to only allow changing erase sector size one time */
+static u8 spi_nor_erase_cnt = 0;
+static const struct spi_nor_erase_type *
+spi_nor_select_uniform_erase(struct spi_nor_erase_map *map,
+							const u32 wanted_size);
+
 /*
  * Erase an address range on the nor chip.  The address range may extend
  * one or more erase sectors. Return an error if there is a problem erasing.
@@ -1803,6 +1809,25 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
 	uint32_t rem;
 	int ret;
 
+#if defined (CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR)
+	if (spi_nor_erase_cnt == 0 &&
+		(strncmp(mtd->src_mtd_name, "hnor", 4) == 0)) {
+		struct spi_nor_erase_map *map = &nor->params->erase_map;
+		const struct spi_nor_erase_type *erase = NULL;
+		u32 wanted_size = 4096u;
+		spi_nor_erase_cnt = 1;
+
+		if (spi_nor_has_uniform_erase(nor)) {
+			erase = spi_nor_select_uniform_erase(map, wanted_size);
+			if (!erase) {
+				dev_err(nor->dev, "Can't select uniform erase command\n");
+				return -EINVAL;
+			}
+			nor->erase_opcode = erase->opcode;
+			mtd->erasesize = erase->size;
+		}
+	}
+#endif //CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR
 	dev_dbg(nor->dev, "at 0x%llx, len %lld\n", (long long)instr->addr,
 			(long long)instr->len);
 
@@ -2572,9 +2597,13 @@ spi_nor_select_uniform_erase(struct spi_nor_erase_map *map,
 	if (!erase)
 		return NULL;
 
+#if defined (CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR)
+    /* Keep all Sector Erase commands to use later for hnor partition */
+#else
 	/* Disable all other Sector Erase commands. */
 	map->uniform_erase_type &= ~SNOR_ERASE_TYPE_MASK;
 	map->uniform_erase_type |= BIT(erase - map->erase_type);
+#endif //CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR
 	return erase;
 }
 
@@ -3532,6 +3561,12 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
 
 	/* No mtd_info fields should be used up to this point. */
 	spi_nor_set_mtd_info(nor);
+
+#if defined (CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR)
+	if (strncmp(mtd->name, "pnor", 4) == 0) {
+		spi_nor_erase_cnt = 0;
+	}
+#endif //CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR
 
 	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
 			(long long)mtd->size >> 10);
