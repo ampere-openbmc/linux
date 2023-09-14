@@ -206,6 +206,13 @@ config MTD_PARTITIONED_MASTER
 	  the parent of the partition device be the master device, rather than
 	  what lies behind the master.
 
+config MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR
+	bool "Force erase size of hnor partition to 4k"
+	default n
+	help
+	  Provide the configuration to enable the code to set SPI hnor partition
+	  erase size to 4k.
+
 source "drivers/mtd/chips/Kconfig"
 
 source "drivers/mtd/maps/Kconfig"
