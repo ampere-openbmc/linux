@@ -89,6 +89,17 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
 	child->dev.parent = IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) || mtd_is_partition(parent) ?
 			    &parent->dev : parent->dev.parent;
 	child->dev.of_node = part->of_node;
+
+	/* Clone priv info from master to hnor partition info which
+	 * will be used to get the correct erase opcode */
+#if defined (CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR)
+	if (strncmp(child->name, "hnor", 4) == 0)
+	{
+		child->priv = parent->priv;
+		child->erasesize = 4096u;
+	}
+#endif //CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR
+
 	child->parent = parent;
 	child->part.offset = part->offset;
 	INIT_LIST_HEAD(&child->partitions);
@@ -145,6 +156,13 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
 			part->name, parent->name, child->part.size);
 	}
 
+#if defined (CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR)
+	if (strncmp(child->name, "hnor", 4) == 0)
+	{
+		goto bypass_update_child_erase_size;
+	}
+#endif //CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR
+
 	if (parent->numeraseregions > 1) {
 		/* Deal with variable erase size stuff */
 		int i, max = parent->numeraseregions;
@@ -171,6 +189,7 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
 		child->erasesize = master->erasesize;
 	}
 
+bypass_update_child_erase_size:
 	/*
 	 * Child erasesize might differ from the parent one if the parent
 	 * exposes several regions with different erasesize. Adjust

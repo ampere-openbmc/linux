@@ -398,8 +398,30 @@ struct mtd_info {
 
 	struct mtd_part part;
 	struct mtd_master master;
+#if defined (CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR)
+	/*
+	 * The name of the source action mtd.
+	 *
+	 * The mtd master need to know the source of the action to handle the erase,
+	 * read and write action correctly base on the name
+	 */
+	const char *src_mtd_name;
+#endif //CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR
 };
 
+#if defined (CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR)
+static inline struct mtd_info *mtd_get_master(struct mtd_info *mtd)
+{
+	struct mtd_info *parent = mtd;
+	while (parent->parent)
+	{
+		parent = parent->parent;
+	}
+	parent->src_mtd_name = mtd->name;
+
+	return parent;
+}
+#else
 static inline struct mtd_info *mtd_get_master(struct mtd_info *mtd)
 {
 	while (mtd->parent)
@@ -407,6 +429,7 @@ static inline struct mtd_info *mtd_get_master(struct mtd_info *mtd)
 
 	return mtd;
 }
+#endif //CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR
 
 static inline u64 mtd_get_master_ofs(struct mtd_info *mtd, u64 ofs)
 {
