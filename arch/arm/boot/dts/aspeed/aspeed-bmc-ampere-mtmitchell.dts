@@ -366,6 +366,16 @@
 		m25p,fast-read;
 		label = "pnor";
 		spi-max-frequency = <20000000>;
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+			partition@0 {
+				label = "hnor";
+				/* Set max size to 64MB */
+				reg = <0 0x4000000>;
+			};
+		};
 	};
 };
 
