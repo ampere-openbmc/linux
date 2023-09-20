@@ -29,9 +29,7 @@ static int ltc2497core_wait_conv(struct ltc2497core_driverdata *ddata)
 		/* delay if conversion time not passed
 		 * since last read or write
 		 */
-		if (msleep_interruptible(
-		    LTC2497_CONVERSION_TIME_MS - time_elapsed))
-			return -ERESTARTSYS;
+		msleep(LTC2497_CONVERSION_TIME_MS - time_elapsed);
 
 		return 0;
 	}
@@ -59,9 +57,7 @@ static int ltc2497core_read(struct ltc2497core_driverdata *ddata, u8 address, in
 		if (ret < 0)
 			return ret;
 		ddata->addr_prev = address;
-
-		if (msleep_interruptible(LTC2497_CONVERSION_TIME_MS))
-			return -ERESTARTSYS;
+		msleep(LTC2497_CONVERSION_TIME_MS);
 	}
 
 	ret = ddata->result_and_measure(ddata, address, val);
