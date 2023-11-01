@@ -880,6 +880,10 @@
 	};
 };
 
+&i2c10 {
+	status = "okay";
+};
+
 &i2c11 {
 	status = "okay";
 	ssif-bmc@10 {
@@ -900,6 +904,10 @@
 		compatible = "ti,tmp175";
 		reg = <0x35>;
 	};
+};
+
+&i2c15 {
+	status = "okay";
 };
 
 &jtag1 {
