@@ -842,6 +842,10 @@
 	};
 };
 
+&i2c10 {
+	status = "okay";
+};
+
 &i2c11 {
 	status = "okay";
 	ssif-bmc@10 {
