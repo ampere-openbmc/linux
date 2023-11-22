@@ -113,9 +113,6 @@ static long jtag_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 				   sizeof(struct jtag_xfer)))
 			return -EFAULT;
 
-		if (xfer.length >= JTAG_MAX_XFER_DATA_LEN)
-			return -EINVAL;
-
 		if (xfer.type > JTAG_SDR_XFER)
 			return -EINVAL;
 
@@ -189,9 +186,6 @@ static long jtag_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		if (copy_from_user(&bitbang, (const void __user *)arg,
 				   sizeof(struct bitbang_packet)))
 			return -EFAULT;
-
-		if (bitbang.length >= JTAG_MAX_XFER_DATA_LEN)
-			return -EINVAL;
 
 		data_size = bitbang.length * sizeof(struct tck_bitbang);
 		bitbang_data = memdup_user((void __user *)bitbang.data,
