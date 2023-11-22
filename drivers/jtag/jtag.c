@@ -91,9 +91,6 @@ static long jtag_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 				   sizeof(struct jtag_xfer)))
 			return -EFAULT;
 
-		if (xfer.length >= JTAG_MAX_XFER_DATA_LEN)
-			return -EINVAL;
-
 		if (xfer.type > JTAG_SDR_XFER)
 			return -EINVAL;
 
