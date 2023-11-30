@@ -93,6 +93,10 @@
 		 ASPEED_I2CD_INTR_RX_DONE |				       \
 		 ASPEED_I2CD_INTR_TX_NAK |				       \
 		 ASPEED_I2CD_INTR_TX_ACK)
+#define ASPEED_I2CD_INTR_ACK_RX_TX					       \
+		(ASPEED_I2CD_INTR_RX_DONE |				       \
+		 ASPEED_I2CD_INTR_TX_ACK |				       \
+		 ASPEED_I2CD_INTR_TX_NAK)
 
 /* 0x14 : I2CD Command/Status Register   */
 #define ASPEED_I2CD_SCL_LINE_STS			BIT(18)
@@ -635,10 +639,19 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
 
 	spin_lock(&bus->lock);
 	irq_received = readl(bus->base + ASPEED_I2C_INTR_STS_REG);
-	/* Ack all interrupts except for Rx done */
-	writel(irq_received & ~ASPEED_I2CD_INTR_RX_DONE,
-	       bus->base + ASPEED_I2C_INTR_STS_REG);
-	readl(bus->base + ASPEED_I2C_INTR_STS_REG);
+
+	/*
+	 * Early acking of INTR_RX_DONE and INTR_TX_[ACK|NAK] would indicate HW to
+	 * start receiving or sending new data, and this may cause a race condition
+	 * as the irq handler has not yet handled these irqs but is being acked.
+	 * Let's ack them late at the end of the irq handler when those are truly processed.
+	 */
+	if (irq_received & ~ASPEED_I2CD_INTR_ACK_RX_TX) {
+		writel(irq_received & ~ASPEED_I2CD_INTR_ACK_RX_TX,
+		       bus->base + ASPEED_I2C_INTR_STS_REG);
+		readl(bus->base + ASPEED_I2C_INTR_STS_REG);
+	}
+
 	irq_received &= ASPEED_I2CD_INTR_RECV_MASK;
 	irq_remaining = irq_received;
 
@@ -681,12 +694,12 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
 			"irq handled != irq. expected 0x%08x, but was 0x%08x\n",
 			irq_received, irq_handled);
 
-	/* Ack Rx done */
-	if (irq_received & ASPEED_I2CD_INTR_RX_DONE) {
-		writel(ASPEED_I2CD_INTR_RX_DONE,
+	if (irq_received & ASPEED_I2CD_INTR_ACK_RX_TX) {
+		writel(irq_received & ASPEED_I2CD_INTR_ACK_RX_TX,
 		       bus->base + ASPEED_I2C_INTR_STS_REG);
 		readl(bus->base + ASPEED_I2C_INTR_STS_REG);
 	}
+
 	spin_unlock(&bus->lock);
 	return irq_remaining ? IRQ_NONE : IRQ_HANDLED;
 }
