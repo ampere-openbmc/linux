@@ -150,6 +150,14 @@
 		mux-gpios = <&gpio0 ASPEED_GPIO(I, 5) GPIO_ACTIVE_HIGH>;
 	};
 
+	gpioVBATmux: mux-controller {
+		compatible = "gpio-mux";
+		#mux-control-cells = <0>;
+		mux-gpios = <&gpio0 ASPEED_GPIO(I, 5) GPIO_ACTIVE_HIGH>,
+			    <&gpio0 ASPEED_GPIO(I, 7) GPIO_ACTIVE_HIGH>;
+		idle-state = <0>;
+	};
+
 	adc0mux: adc0mux {
 		compatible = "io-channel-mux";
 		io-channels = <&adc_i2c_0 0>;
@@ -275,9 +283,9 @@
 		io-channels = <&adc_i2c_0 12>;
 		#io-channel-cells = <1>;
 		io-channel-names = "parent";
-		mux-controls = <&gpioI5mux>;
-		settle-time-us = <10000>;
-		channels = "s0", "s1";
+		mux-controls = <&gpioVBATmux>;
+		settle-time-us = <30000>;
+		channels = "reserved-0", "sb-12v", "vbat","reserved-1";
 	};
 
 	adc13mux: adc13mux {
@@ -324,7 +332,7 @@
 				<&adc9mux 0>, <&adc9mux 1>,
 				<&adc10mux 0>, <&adc10mux 1>,
 				<&adc11mux 0>, <&adc11mux 1>,
-				<&adc12mux 0>, <&adc12mux 1>,
+				<&adc12mux 2>, <&adc12mux 1>,
 				<&adc13mux 0>, <&adc13mux 1>,
 				<&adc14mux 0>, <&adc14mux 1>,
 				<&adc15mux 0>, <&adc15mux 1>,
