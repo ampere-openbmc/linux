@@ -936,7 +936,15 @@ int mctp_local_output(struct sock *sk, struct mctp_route *rt,
 
 	spin_lock_irqsave(&rt->dev->addrs_lock, flags);
 	if (rt->dev->num_addrs == 0) {
-		rc = -EHOSTUNREACH;
+		/* Set source EID 0 if we're using extended addressing with no
+		* local addresses; we'll need a phys-addresses reply anyway.
+		*/
+		if (ext_rt) {
+			saddr = MCTP_ADDR_NULL;
+			rc = 0;
+		} else {
+			rc = -EHOSTUNREACH;
+		}
 	} else {
 		/* use the outbound interface's first address as our source */
 		saddr = rt->dev->addrs[0];
