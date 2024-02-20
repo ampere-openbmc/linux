@@ -329,6 +329,9 @@ static int mctp_frag_queue(struct mctp_sk_key *key, struct sk_buff *skb)
 	return 0;
 }
 
+/* May be called with a NULL @route on a physical-addressed packet for
+ * us. See the !rt case in mctp_pkttype_receive()
+ */
 static int mctp_route_input(struct mctp_route *route, struct sk_buff *skb)
 {
 	struct mctp_sk_key *key, *any_key = NULL;
@@ -778,26 +781,6 @@ struct mctp_route *mctp_route_lookup(struct net *net, unsigned int dnet,
 	return rt;
 }
 
-static struct mctp_route *mctp_route_lookup_null(struct net *net,
-						 struct net_device *dev)
-{
-	struct mctp_route *tmp, *rt = NULL;
-
-	rcu_read_lock();
-
-	list_for_each_entry_rcu(tmp, &net->mctp.routes, list) {
-		if (tmp->dev->dev == dev && tmp->type == RTN_LOCAL &&
-		    refcount_inc_not_zero(&tmp->refs)) {
-			rt = tmp;
-			break;
-		}
-	}
-
-	rcu_read_unlock();
-
-	return rt;
-}
-
 static int mctp_do_fragment_route(struct mctp_route *rt, struct sk_buff *skb,
 				  unsigned int mtu, u8 tag)
 {
@@ -1178,15 +1161,19 @@ static int mctp_pkttype_receive(struct sk_buff *skb, struct net_device *dev,
 
 	rt = mctp_route_lookup(net, cb->net, mh->dest);
 
-	/* NULL EID, but addressed to our physical address */
-	if (!rt && mh->dest == MCTP_ADDR_NULL && skb->pkt_type == PACKET_HOST)
-		rt = mctp_route_lookup_null(net, dev);
+	if (rt) {
+		rt->output(rt, skb);
+		mctp_route_release(rt);
+	} else {
+		/* NULL EID, but addressed to our physical address. Pass
+		* directly to input
+		*/
+		if (mh->dest == MCTP_ADDR_NULL && skb->pkt_type == PACKET_HOST)
+			mctp_route_input(NULL, skb);
+		else
+			goto err_drop;
+	}
 
-	if (!rt)
-		goto err_drop;
-
-	rt->output(rt, skb);
-	mctp_route_release(rt);
 	mctp_dev_put(mdev);
 
 	return NET_RX_SUCCESS;
