@@ -1052,6 +1052,7 @@ int mctp_local_output(struct sock *sk, struct mctp_dst *dst,
 		      struct sk_buff *skb, mctp_eid_t daddr, u8 req_tag)
 {
 	struct mctp_sock *msk = container_of(sk, struct mctp_sock, sk);
+	struct mctp_skb_cb *cb = mctp_cb(skb);
 	struct mctp_sk_key *key;
 	struct mctp_hdr *hdr;
 	unsigned long flags;
@@ -1068,7 +1069,15 @@ int mctp_local_output(struct sock *sk, struct mctp_dst *dst,
 
 	spin_lock_irqsave(&dst->dev->addrs_lock, flags);
 	if (dst->dev->num_addrs == 0) {
-		rc = -EHOSTUNREACH;
+		/* Set source EID 0 if we're using extended addressing with no
+		* local addresses; we'll need a phys-addresses reply anyway.
+		*/
+		if (cb->ifindex) {
+			saddr = MCTP_ADDR_NULL;
+			rc = 0;
+		} else {
+			rc = -EHOSTUNREACH;
+		}
 	} else {
 		/* use the outbound interface's first address as our source */
 		saddr = dst->dev->addrs[0];
