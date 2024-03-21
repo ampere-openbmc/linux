@@ -284,7 +284,7 @@
 		#io-channel-cells = <1>;
 		io-channel-names = "parent";
 		mux-controls = <&gpioVBATmux>;
-		settle-time-us = <20000>;
+		settle-time-us = <30000>;
 		channels = "reserved-0", "sb-12v", "vbat","reserved-1";
 	};
 
