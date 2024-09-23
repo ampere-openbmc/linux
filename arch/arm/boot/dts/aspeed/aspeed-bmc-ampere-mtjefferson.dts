@@ -17,6 +17,11 @@
 		i2c24 = &i2c2_bus70_chn0;
 
 		/*
+		 *  i2c bus 30 assigned to OCP slot
+		 */
+		i2c30 = &ocpslot;
+
+		/*
 		 *  I2C NVMe alias port
 		 */
 		i2c48 = &nvmeslot_0;
@@ -439,6 +444,25 @@
 				#size-cells = <0>;
 				reg = <0x74>;
 				i2c-mux-idle-disconnect;
+
+				ocpslot: i2c@0 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x0>;
+
+					ocpslot_temp: temperature-sensor@1f {
+						compatible = "ti,tmp421";
+						reg = <0x1f>;
+
+						channel@0 {
+							reg = <0x0>;
+							status = "disabled";
+						};
+						channel@1 {
+							reg = <0x1>;
+						};
+					};
+				};
 
 				nvmeslot_0: i2c@4 {
 					#address-cells = <1>;
