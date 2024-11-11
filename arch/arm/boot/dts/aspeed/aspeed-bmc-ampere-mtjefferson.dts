@@ -633,7 +633,7 @@
 	/*R0-R7*/	"","","","","","","","",
 	/*S0-S7*/	"","","identify-button","led-identify","","spi-nor-access","host0-ready","",
 	/*T0-T7*/	"","","","","","","","",
-	/*U0-U7*/	"","","","","","","","",
+	/*U0-U7*/	"","","nmi-button","","","","","",
 	/*V0-V7*/	"s0-hightemp-n","s0-fault-alert","s0-sys-auth-failure-n",
 			"host0-reboot-ack-n","s0-fw-boot-ok","host0-shd-req-n",
 			"host0-shd-ack-n","s0-overtemp-n",
