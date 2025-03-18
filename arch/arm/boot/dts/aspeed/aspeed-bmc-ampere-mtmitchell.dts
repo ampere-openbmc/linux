@@ -426,28 +426,44 @@
 	};
 };
 
+&udma {
+	status = "okay";
+};
+
 &uart1 {
 	status = "okay";
+	dma-mode;
+	dma-channel = <0>;
 };
 
 &uart2 {
 	status = "okay";
+	dma-mode;
+	dma-channel = <1>;
 };
 
 &uart3 {
 	status = "okay";
+	dma-mode;
+	dma-channel = <2>;
 };
 
 &uart4 {
 	status = "okay";
+	dma-mode;
+	dma-channel = <3>;
 };
 
 &uart8 {
 	status = "okay";
+	dma-mode;
+	dma-channel = <6>;
 };
 
 &uart9 {
 	status = "okay";
+	dma-mode;
+	dma-channel = <7>;
 };
 
 &i2c0 {
