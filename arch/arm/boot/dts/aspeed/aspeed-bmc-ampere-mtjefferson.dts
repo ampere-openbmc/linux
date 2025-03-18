@@ -21,6 +21,12 @@
 		 */
 		i2c30 = &ocpslot;
 
+
+		/*
+		 *  I2C PCIe NIC alias port
+		 */
+		i2c40 = &pcienic;
+
 		/*
 		 *  I2C NVMe alias port
 		 */
@@ -422,6 +428,49 @@
 					#address-cells = <1>;
 					#size-cells = <0>;
 					reg = <0x7>;
+				};
+			};
+
+			i2c-mux@73 {
+				compatible = "nxp,pca9548";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reg = <0x73>;
+				i2c-mux-idle-disconnect;
+
+				i2c@4 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x4>;
+
+					i2c-mux@77 {
+						compatible = "nxp,pca9548";
+						#address-cells = <1>;
+						#size-cells = <0>;
+						reg = <0x77>;
+						i2c-mux-idle-disconnect;
+
+						pcienic: i2c@0 {
+							#address-cells = <1>;
+							#size-cells = <0>;
+							reg = <0x0>;
+
+							pcienic_temp: temperature-sensor@1f {
+								compatible = "ti,tmp421";
+								reg = <0x1f>;
+								#address-cells = <1>;
+								#size-cells = <0>;
+
+								channel@0 {
+									reg = <0x0>;
+									status = "disabled";
+								};
+								channel@1 {
+									reg = <0x1>;
+								};
+							};
+						};
+					};
 				};
 			};
 
