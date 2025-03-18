@@ -195,12 +195,20 @@
 	};
 };
 
+&udma {
+	status = "okay";
+};
+
 &uart1 {
 	status = "okay";
+	dma-mode;
+	dma-channel = <0>;
 };
 
 &uart2 {
 	status = "okay";
+	dma-mode;
+	dma-channel = <1>;
 };
 
 &i2c0 {
