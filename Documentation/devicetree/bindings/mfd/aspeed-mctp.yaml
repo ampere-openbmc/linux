@@ -1,0 +1,93 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/net/aspeed,ast2600-mctp.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: Aspeed AST2600 MCTP Controller
+
+maintainers:
+  - Khang D Nguyen <khangng@os.amperecomputing.com>
+
+description: |+
+  The Aspeed AST2600 MCTP controller enables MCTP-over-PCIe-VDM
+  communication for Aspeed SoC.
+
+properties:
+  compatible:
+    const: aspeed,ast2600-mctp
+
+  reg:
+    maxItems: 1
+
+  interrupts-extended:
+    maxItems: 3
+
+  interrupt-names:
+    maxItems: 3
+    items:
+      - const: mctp
+      - const: perst-hi
+      - const: perst-lo
+
+  resets:
+    maxItems: 2
+
+  aspeed,pcieh:
+    maxItems: 1
+
+  aspeed,rx-hw-queue-depth:
+    type: u32
+
+  aspeed,tx-hw-queue-depth:
+    type: u32
+
+  aspeed,rx-polling-interval-msec:
+    type: u32
+
+  pcie_rc:
+    type: boolean
+
+  memory-region:
+    maxItems: 1
+
+required:
+  - compatible
+  - reg
+  - interrupts-extended
+  - interrupt-names
+  - resets
+  - aspeed,pcieh
+  - aspeed,rx-hw-queue-depth
+  - aspeed,tx-hw-queue-depth
+  - status
+  - memory-region
+
+examples:
+  - |
+    #include <dt-bindings/interrupt-controller/arm-gic.h>
+    #include <dt-bindings/interrupt-controller/aspeed-scu-ic.h>
+    #include <dt-bindings/clock/ast2600-clock.h>
+
+    reserved-memory {
+            mctp0_reserved: mctp0_reserved@b1000000 {
+                    reg = <0xb1000000 0x10000>;
+                    compatible = "shared-dma-pool";
+                    no-map;
+            };
+    };
+
+    mctp0: mctp@1e6e8000 {
+            compatible = "aspeed,ast2600-mctp";
+            reg = <0x1e6e8000 0x30>;
+            interrupts-extended = <&gic GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>,
+                    <&scu_ic0 ASPEED_AST2600_SCU_IC0_PCIE_PERST_LO_TO_HI>,
+                    <&scu_ic0 ASPEED_AST2600_SCU_IC0_PCIE_PERST_HI_TO_LO>;
+            interrupt-names = "mctp", "perst-hi", "perst-lo";
+            resets = <&syscon ASPEED_RESET_DEV_MCTP>;
+            aspeed,pcieh = <&pcie_ep>;
+            aspeed,rx-hw-queue-depth = <96>;
+            aspeed,tx-hw-queue-depth = <48>;
+            memory-region = <&mctp0_reserved>;
+            status = "okay";
+    };
