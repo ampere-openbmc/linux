@@ -28,6 +28,11 @@
 		i2c40 = &pcienic;
 
 		/*
+		 *  I2C Riser alias port
+		 */
+		i2c42 = &riser;
+
+		/*
 		 *  I2C NVMe alias port
 		 */
 		i2c48 = &nvmeslot_0;
@@ -476,6 +481,17 @@
 								channel@1 {
 									reg = <0x1>;
 								};
+							};
+						};
+
+						riser: i2c@2 {
+							#address-cells = <1>;
+							#size-cells = <0>;
+							reg = <0x2>;
+
+							eeprom@56 {
+								compatible = "atmel,24c02";
+								reg = <0x56>;
 							};
 						};
 					};
