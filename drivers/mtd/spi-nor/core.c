@@ -1772,6 +1772,9 @@ static int spi_nor_erase_dice(struct spi_nor *nor, loff_t addr,
 	return 0;
 }
 
+/* variable to only allow changing erase sector size one time */
+static u8 spi_nor_erase_cnt = 0;
+
 /*
  * Erase an address range on the nor chip.  The address range may extend
  * one or more erase sectors. Return an error if there is a problem erasing.
@@ -1784,6 +1787,16 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
 	u32 addr, len, rem;
 	size_t die_size;
 	int ret;
+
+#if defined (CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR)
+	if (spi_nor_erase_cnt == 0 &&
+		(strncmp(mtd->src_mtd_name, "hnor", 4) == 0)) {
+		spi_nor_erase_cnt = 1;
+		nor->erase_opcode = SPINOR_OP_BE_4K_4B;
+		mtd->erasesize = SZ_4K;
+	}
+#endif //CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR
+
 
 	dev_dbg(nor->dev, "at 0x%llx, len %lld\n", (long long)instr->addr,
 			(long long)instr->len);
@@ -3502,6 +3515,12 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
 	ret = spi_nor_set_mtd_info(nor);
 	if (ret)
 		return ret;
+
+#if defined (CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR)
+       if (strncmp(nor->mtd.name, "pnor", 4) == 0) {
+               spi_nor_erase_cnt = 0;
+       }
+#endif //CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR
 
 	dev_dbg(dev, "Manufacturer and device ID: %*phN\n",
 		SPI_NOR_MAX_ID_LEN, nor->id);

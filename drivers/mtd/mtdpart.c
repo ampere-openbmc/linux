@@ -169,6 +169,14 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
 	} else {
 		/* Single erase size */
 		child->erasesize = master->erasesize;
+		/*
+		 * hnor will have parent->numeraseregions = 0
+		 */
+#if defined (CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR)
+		if (strncmp(child->name, "hnor", 4) == 0) {
+			child->erasesize = SZ_4K;
+		}
+#endif //CONFIG_MTD_FORCE_4K_ERASE_SIZE_FOR_HNOR
 	}
 
 	/*
