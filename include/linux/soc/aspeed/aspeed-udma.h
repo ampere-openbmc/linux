@@ -18,10 +18,10 @@ void aspeed_udma_tx_chan_ctrl(u32 ch_no, enum aspeed_udma_ops op);
 void aspeed_udma_rx_chan_ctrl(u32 ch_no, enum aspeed_udma_ops op);
 
 int aspeed_udma_request_tx_chan(u32 ch_no, dma_addr_t addr,
-				struct circ_buf *rb, u32 rb_sz,
+				u32 rb_sz,
 				aspeed_udma_cb_t cb, void *id, bool en_tmout);
 int aspeed_udma_request_rx_chan(u32 ch_no, dma_addr_t addr,
-				struct circ_buf *rb, u32 rb_sz,
+				u32 rb_sz,
 				aspeed_udma_cb_t cb, void *id, bool en_tmout);
 
 int aspeed_udma_free_tx_chan(u32 ch_no);

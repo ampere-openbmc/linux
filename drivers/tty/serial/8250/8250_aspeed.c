@@ -54,7 +54,8 @@ struct ast8250_udma {
 	dma_addr_t tx_addr;
 	dma_addr_t rx_addr;
 
-	struct circ_buf *tx_rb;
+	u32 tx_rb_ptr;
+	struct tty_port *tx_port;
 	struct circ_buf *rx_rb;
 
 	bool tx_tmout_dis;
@@ -82,14 +83,15 @@ static void ast8250_dma_tx_complete(int tx_rb_rptr, void *id)
     unsigned long flags;
 	struct uart_port *port = (struct uart_port*)id;
 	struct ast8250_data *data = port->private_data;
+	struct ast8250_udma *dma = &data->dma;
 
     spin_lock_irqsave(&port->lock, flags);
 
-	count = CIRC_CNT(tx_rb_rptr, port->state->xmit.tail, data->dma.tx_rbsz);
-	port->state->xmit.tail = tx_rb_rptr;
-	port->icount.tx += count;
+	count = CIRC_CNT(tx_rb_rptr, dma->tx_rb_ptr, data->dma.tx_rbsz);
+	dma->tx_rb_ptr = tx_rb_rptr;
+	uart_xmit_advance(port, count);
 
-    if (uart_circ_chars_pending(&port->state->xmit) < WAKEUP_CHARS)
+    if (kfifo_len(&dma->tx_port->xmit_fifo) < WAKEUP_CHARS)
         uart_write_wakeup(port);
 
     spin_unlock_irqrestore(&port->lock, flags);
@@ -136,12 +138,15 @@ static void ast8250_dma_start_tx(struct uart_port *port)
 {
 	struct ast8250_data *data = port->private_data;
 	struct ast8250_udma *dma = &data->dma;
-	struct circ_buf *tx_rb = dma->tx_rb;
+	struct tty_port *tx_port = dma->tx_port;
+	u32 tx_rb_ptr = dma->tx_rb_ptr;
 
 	dma_sync_single_for_device(port->dev,
 			dma->tx_addr, dma->tx_rbsz, DMA_TO_DEVICE);
 
-	aspeed_udma_set_tx_wptr(dma->ch, tx_rb->head);
+	tx_rb_ptr += kfifo_len(&tx_port->xmit_fifo);
+	tx_rb_ptr %= dma->tx_rbsz;
+	aspeed_udma_set_tx_wptr(dma->ch, tx_rb_ptr);
 }
 
 static void ast8250_dma_pops_hook(struct uart_port *port)
@@ -234,7 +239,8 @@ static int ast8250_startup(struct uart_port *port)
 		 * To keep the TX/RX operation consistency, we use the
 		 * streaming DMA interface instead of the coherent one
 		 */
-		dma->tx_rb = &port->state->xmit;
+		dma->tx_port = &port->state->port;
+		dma->tx_rb_ptr = 0;
 		dma->rx_rb->buf = kzalloc(data->dma.rx_rbsz, GFP_KERNEL);
 		if (IS_ERR_OR_NULL(dma->rx_rb->buf)) {
 			dev_err(port->dev, "failed to allcoate RX DMA buffer\n");
@@ -242,7 +248,7 @@ static int ast8250_startup(struct uart_port *port)
 			goto out;
 		}
 
-		dma->tx_addr = dma_map_single(port->dev, dma->tx_rb->buf,
+		dma->tx_addr = dma_map_single(port->dev, dma->tx_port->xmit_buf,
 				dma->tx_rbsz, DMA_TO_DEVICE);
 		if (dma_mapping_error(port->dev, dma->tx_addr)) {
 			dev_err(port->dev, "failed to map streaming TX DMA region\n");
@@ -259,14 +265,14 @@ static int ast8250_startup(struct uart_port *port)
 		}
 
 		rc = aspeed_udma_request_tx_chan(dma->ch, dma->tx_addr,
-				dma->tx_rb, dma->tx_rbsz, ast8250_dma_tx_complete, port, dma->tx_tmout_dis);
+				dma->tx_rbsz, ast8250_dma_tx_complete, port, dma->tx_tmout_dis);
 		if (rc) {
 			dev_err(port->dev, "failed to request DMA TX channel\n");
 			goto free_dma_n_out;
 		}
 
 		rc = aspeed_udma_request_rx_chan(dma->ch, dma->rx_addr,
-				dma->rx_rb, dma->rx_rbsz, ast8250_dma_rx_complete, port, dma->rx_tmout_dis);
+				dma->rx_rbsz, ast8250_dma_rx_complete, port, dma->rx_tmout_dis);
 		if (rc) {
 			dev_err(port->dev, "failed to request DMA RX channel\n");
 			goto free_dma_n_out;
@@ -461,7 +467,7 @@ static int ast8250_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int ast8250_remove(struct platform_device *pdev)
+static void ast8250_remove(struct platform_device *pdev)
 {
     struct ast8250_data *data = platform_get_drvdata(pdev);
 
@@ -469,7 +475,6 @@ static int ast8250_remove(struct platform_device *pdev)
 		ast8250_vuart_set_enable(data, false);
 
     serial8250_unregister_port(data->line);
-	return 0;
 }
 
 static const struct dev_pm_ops ast8250_pm_ops = {
