@@ -103,7 +103,7 @@
 #define WAIT_ITERATIONS		300
 
 /* Use this macro to switch between HW mode 1(comment out) and 2(defined)  */
-#define ASPEED_JTAG_HW_MODE_2_ENABLE	1
+// #define ASPEED_JTAG_HW_MODE_2_ENABLE	1
 
 /* ASPEED JTAG HW MODE 2 (Only supported in AST26xx series) */
 #define ASPEED_JTAG_SHDATA		0x20
